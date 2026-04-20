@@ -7,11 +7,11 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback } from "react";
 import { Alert, Image, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { consumePickedMapLocation } from "../../store/picked-location-store";
 import { Location } from "../../types";
 import { getAddress, getMapPreview } from "../../util/location";
+import OutlinedButton from "../UI/OutlinedButton";
 
 interface LocationPickerProps {
   onPickLocation: (location: Location) => void;

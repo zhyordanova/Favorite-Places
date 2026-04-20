@@ -23,4 +23,3 @@ export async function getAddress(lat: number, lng: number): Promise<string> {
 
   return address;
 }
-

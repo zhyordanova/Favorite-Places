@@ -1,10 +1,10 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, View, Alert } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { fetchPlaceDetails } from "@/util/database";
+import OutlinedButton from "../components/UI/OutlinedButton";
 import { Place } from "../models/place";
 
 function PlaceDetails() {
@@ -29,10 +29,7 @@ function PlaceDetails() {
         const place = await fetchPlaceDetails(placeId);
         setFetchedPlace(place);
       } catch {
-        Alert.alert(
-          "Error",
-          "Could not load place details. Please try again.",
-        );
+        Alert.alert("Error", "Could not load place details. Please try again.");
       }
     }
 
