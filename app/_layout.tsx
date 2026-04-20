@@ -2,6 +2,7 @@ import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
 
 import IconButton from "@/components/UI/IconButton";
 import { Colors } from "@/constants/colors";
@@ -13,23 +14,30 @@ export default function RootLayout() {
   const router = useRouter();
 
   const [dbInitialized, setDbInitialized] = useState(false);
+  const [dbError, setDbError] = useState(false);
 
   useEffect(() => {
     init()
+      .then(() => {
+        setDbInitialized(true);
+      })
       .catch((error) => {
         console.log("Initializing db failed.");
         console.log(error);
+        setDbError(true);
       })
       .finally(() => {
-        setDbInitialized(true);
+        SplashScreen.hideAsync();
       });
   }, []);
 
-  useEffect(() => {
-    if (dbInitialized) {
-      SplashScreen.hideAsync();
-    }
-  }, [dbInitialized]);
+  if (dbError) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Failed to initialize the database. Please restart the app.</Text>
+      </View>
+    );
+  }
 
   if (!dbInitialized) {
     return null;

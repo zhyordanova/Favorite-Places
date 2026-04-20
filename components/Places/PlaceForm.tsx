@@ -30,7 +30,16 @@ function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   }, []);
 
   function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage!, pickedLocation!);
+    if (!enteredTitle.trim()) {
+    if (!selectedImage) {
+      Alert.alert("Missing Image", "Please take or pick an image.");
+      return;
+    }
+    if (!pickedLocation) {
+      Alert.alert("Missing Location", "Please pick a location.");
+      return;
+    }
+    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
     onCreatePlace(placeData);
   }
 
