@@ -36,10 +36,19 @@ function LocationPicker({
           return;
         }
 
-        const address = await getAddress(
-          mapPickedLocation.lat,
-          mapPickedLocation.lng,
-        );
+        let address: string;
+        try {
+          address = await getAddress(
+            mapPickedLocation.lat,
+            mapPickedLocation.lng,
+          );
+        } catch {
+          Alert.alert(
+            "Geocoding Failed",
+            "Could not retrieve the address for the selected location.",
+          );
+          return;
+        }
 
         onPickLocation({ ...mapPickedLocation, address });
       }
@@ -79,13 +88,32 @@ function LocationPicker({
       return;
     }
 
-    const location = await getCurrentPositionAsync();
+    let location;
+    try {
+      location = await getCurrentPositionAsync();
+    } catch {
+      Alert.alert(
+        "Location Unavailable",
+        "Could not fetch your location. Make sure location services are enabled on your device.",
+      );
+      return;
+    }
 
     const currentLocation = {
       lat: location.coords.latitude,
       lng: location.coords.longitude,
     };
-    const address = await getAddress(currentLocation.lat, currentLocation.lng);
+
+    let address: string;
+    try {
+      address = await getAddress(currentLocation.lat, currentLocation.lng);
+    } catch {
+      Alert.alert(
+        "Geocoding Failed",
+        "Could not retrieve the address for your location.",
+      );
+      return;
+    }
 
     onPickLocation({ ...currentLocation, address });
   }

@@ -14,6 +14,11 @@ export async function getAddress(lat: number, lng: number): Promise<string> {
   }
 
   const data = await response.json();
+
+  if (!data.features || data.features.length === 0) {
+    throw new Error("No address found for the given coordinates.");
+  }
+
   const address: string = data.features[0].place_name;
 
   return address;
