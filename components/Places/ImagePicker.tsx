@@ -8,8 +8,9 @@ import {
 import * as MediaLibrary from "expo-media-library";
 import { Alert, Image, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from "../../constants/colors";
 import OutlinedButton from "../UI/OutlinedButton";
+import { Colors } from "../../constants/colors";
+import { PICKER_OPTIONS } from "../../constants/imagePicker";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
@@ -66,6 +67,20 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
     return true;
   }
 
+  async function processImageResult(
+    image: Awaited<ReturnType<typeof launchCameraAsync>>,
+    saveToLibrary: boolean,
+  ): Promise<void> {
+    if (image.canceled || !image.assets || image.assets.length === 0) {
+      return;
+    }
+    const uri = image.assets[0].uri;
+    if (saveToLibrary) {
+      await saveToAlbum(uri);
+    }
+    onTakeImage(uri);
+  }
+
   async function saveToAlbum(uri: string): Promise<void> {
     try {
       const asset = await MediaLibrary.createAssetAsync(uri);
@@ -87,19 +102,8 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
       return;
     }
 
-    const image = await launchCameraAsync({
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 0.5,
-    });
-
-    if (image.canceled || !image.assets || image.assets.length === 0) {
-      return;
-    }
-
-    const uri = image.assets[0].uri;
-    await saveToAlbum(uri);
-    onTakeImage(uri);
+    const image = await launchCameraAsync(PICKER_OPTIONS);
+    await processImageResult(image, true);
   }
 
   async function pickImageHandler(): Promise<void> {
@@ -109,18 +113,8 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
       return;
     }
 
-    const image = await launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 0.5,
-    });
-
-    if (image.canceled || !image.assets || image.assets.length === 0) {
-      return;
-    }
-
-    onTakeImage(image.assets[0].uri);
+    const image = await launchImageLibraryAsync({ ...PICKER_OPTIONS, mediaTypes: ["images"] });
+    await processImageResult(image, false);
   }
 
   let imagePreview = <Text>No image taken yet.</Text>;
