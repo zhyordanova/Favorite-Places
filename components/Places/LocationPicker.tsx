@@ -1,6 +1,5 @@
 import {
   getCurrentPositionAsync,
-  PermissionStatus,
   useForegroundPermissions,
 } from "expo-location";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -11,6 +10,7 @@ import { Colors } from "../../constants/colors";
 import { consumePickedMapLocation } from "../../store/picked-location-store";
 import { Location } from "../../types";
 import { getAddress, getMapPreview } from "../../util/location";
+import { usePermission } from "../../hooks/use-permission";
 import OutlinedButton from "../UI/OutlinedButton";
 
 interface LocationPickerProps {
@@ -24,6 +24,12 @@ function LocationPicker({
 }: LocationPickerProps) {
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
+
+  const verifyLocationPermission = usePermission(
+    locationPermissionInformation,
+    requestPermission,
+    "You need to grant location permissions to use this app.",
+  );
 
   const router = useRouter();
 
@@ -58,27 +64,7 @@ function LocationPicker({
   );
 
   async function verifiedPermissions(): Promise<boolean> {
-    if (!locationPermissionInformation) {
-      const permissionResponse = await requestPermission();
-      return permissionResponse.granted;
-    }
-
-    if (
-      locationPermissionInformation.status === PermissionStatus.UNDETERMINED
-    ) {
-      const permissionResponse = await requestPermission();
-      return permissionResponse.granted;
-    }
-
-    if (locationPermissionInformation.status === PermissionStatus.DENIED) {
-      Alert.alert(
-        "Insufficient Permissions!",
-        "You need to grant location permissions to use this app.",
-      );
-      return false;
-    }
-
-    return true;
+    return verifyLocationPermission();
   }
 
   async function getLocationHandler(): Promise<void> {

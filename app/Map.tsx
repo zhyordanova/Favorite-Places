@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, MapPressEvent } from "react-native-maps";
 
 import IconButton from "@/components/UI/IconButton";
 import { setPickedMapLocation } from "@/store/picked-location-store";
@@ -21,7 +21,7 @@ export default function Map() {
     longitudeDelta: 0.0421,
   };
 
-  function selectLocationHandler(event: any) {
+  function selectLocationHandler(event: MapPressEvent) {
     if (initialLocation) {
       return;
     }

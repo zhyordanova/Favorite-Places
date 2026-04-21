@@ -1,7 +1,6 @@
 import {
   launchCameraAsync,
   launchImageLibraryAsync,
-  PermissionStatus,
   useCameraPermissions,
   useMediaLibraryPermissions,
 } from "expo-image-picker";
@@ -11,6 +10,7 @@ import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { PICKER_OPTIONS } from "../../constants/imagePicker";
+import { usePermission } from "../../hooks/use-permission";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
@@ -23,49 +23,17 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
   const [libraryPermissionInformation, requestLibraryPermission] =
     useMediaLibraryPermissions();
 
-  async function verifyCameraPermissions(): Promise<boolean> {
-    if (!cameraPermissionInformation) {
-      const permissionResponse = await requestCameraPermission();
-      return permissionResponse.granted;
-    }
+  const verifyCameraPermission = usePermission(
+    cameraPermissionInformation,
+    requestCameraPermission,
+    "You need to grant camera permissions to use this app.",
+  );
 
-    if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-      const permissionResponse = await requestCameraPermission();
-      return permissionResponse.granted;
-    }
-
-    if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
-      Alert.alert(
-        "Insufficient Permissions!",
-        "You need to grant camera permissions to use this app.",
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  async function verifyLibraryPermissions(): Promise<boolean> {
-    if (!libraryPermissionInformation) {
-      const permissionResponse = await requestLibraryPermission();
-      return permissionResponse.granted;
-    }
-
-    if (libraryPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-      const permissionResponse = await requestLibraryPermission();
-      return permissionResponse.granted;
-    }
-
-    if (libraryPermissionInformation.status === PermissionStatus.DENIED) {
-      Alert.alert(
-        "Insufficient Permissions!",
-        "You need to grant media library permissions to use this app.",
-      );
-      return false;
-    }
-
-    return true;
-  }
+  const verifyLibraryPermission = usePermission(
+    libraryPermissionInformation,
+    requestLibraryPermission,
+    "You need to grant media library permissions to use this app.",
+  );
 
   async function processImageResult(
     image: Awaited<ReturnType<typeof launchCameraAsync>>,
@@ -96,7 +64,7 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
   }
 
   async function takeImageHandler(): Promise<void> {
-    const hasPermission = await verifyCameraPermissions();
+    const hasPermission = await verifyCameraPermission();
 
     if (!hasPermission) {
       return;
@@ -107,7 +75,7 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
   }
 
   async function pickImageHandler(): Promise<void> {
-    const hasPermission = await verifyLibraryPermissions();
+    const hasPermission = await verifyLibraryPermission();
 
     if (!hasPermission) {
       return;
