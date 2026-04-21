@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
-import Button from "../UI/Button";
-import ImagePicker from "./ImagePicker";
-import LocationPicker from "./LocationPicker";
 import { Colors } from "../../constants/colors";
 import { Place } from "../../models/place";
 import { Location } from "../../types";
+import Button from "../UI/Button";
+import ImagePicker from "./ImagePicker";
+import LocationPicker from "./LocationPicker";
 
 interface PlaceFormProps {
   onCreatePlace: (place: Place) => void;
@@ -28,13 +28,14 @@ function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   const pickLocationHandler = useCallback((location: Location) => {
     setPickedLocation(location);
   }, []);
-  
+
   function savePlaceHandler() {
     const placeData = new Place(enteredTitle, selectedImage!, pickedLocation!);
     onCreatePlace(placeData);
   }
 
-  const isFormValid = enteredTitle.trim().length > 0 && !!selectedImage && !!pickedLocation;
+  const isFormValid =
+    enteredTitle.trim().length > 0 && !!selectedImage && !!pickedLocation;
 
   return (
     <ScrollView>
@@ -54,7 +55,9 @@ function PlaceForm({ onCreatePlace }: PlaceFormProps) {
         onPickLocation={pickLocationHandler}
         pickedLocation={pickedLocation}
       />
-      <Button onPress={savePlaceHandler} disabled={!isFormValid}>Add Place</Button>
+      <Button onPress={savePlaceHandler} disabled={!isFormValid}>
+        Add Place
+      </Button>
     </ScrollView>
   );
 }

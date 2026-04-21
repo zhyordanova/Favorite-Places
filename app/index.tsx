@@ -3,9 +3,9 @@ import { useCallback, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 
 import PlacesList from "../components/Places/PlacesList";
+import { Colors } from "../constants/colors";
 import { Place } from "../models/place";
 import { fetchPlaces } from "../util/database";
-import { Colors } from "../constants/colors";
 
 export default function AllPlaces() {
   const [loadedPlaces, setLoadedPlaces] = useState<Place[]>([]);
@@ -22,7 +22,10 @@ export default function AllPlaces() {
           setLoadedPlaces(places);
         } catch {
           setError(true);
-          Alert.alert("Error", "Could not load places. Please restart the app.");
+          Alert.alert(
+            "Error",
+            "Could not load places. Please restart the app.",
+          );
         } finally {
           setIsLoading(false);
         }
