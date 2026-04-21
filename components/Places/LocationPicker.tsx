@@ -7,10 +7,10 @@ import { useCallback } from "react";
 import { Alert, Image, StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "../../constants/colors";
+import { usePermission } from "../../hooks/use-permission";
 import { consumePickedMapLocation } from "../../store/picked-location-store";
 import { Location } from "../../types";
 import { getAddress, getMapPreview } from "../../util/location";
-import { usePermission } from "../../hooks/use-permission";
 import OutlinedButton from "../UI/OutlinedButton";
 
 interface LocationPickerProps {

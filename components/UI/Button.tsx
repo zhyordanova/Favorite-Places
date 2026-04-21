@@ -5,13 +5,19 @@ import { Colors } from "../../constants/colors";
 interface ButtonProps {
   children: React.ReactNode;
   onPress: () => void;
+  disabled?: boolean;
 }
 
-function Button({ children, onPress }: ButtonProps) {
+function Button({ children, onPress, disabled }: ButtonProps) {
   return (
     <Pressable
-      style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.button,
+        pressed && !disabled && styles.pressed,
+        disabled && styles.disabled,
+      ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text style={styles.buttonText}>{children}</Text>
     </Pressable>
@@ -36,6 +42,9 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.7,
+  },
+  disabled: {
+    opacity: 0.4,
   },
   buttonText: {
     textAlign: "center",

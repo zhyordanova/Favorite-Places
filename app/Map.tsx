@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
-import MapView, { Marker, MapPressEvent } from "react-native-maps";
+import MapView, { MapPressEvent, Marker } from "react-native-maps";
 
 import IconButton from "@/components/UI/IconButton";
 import { setPickedMapLocation } from "@/store/picked-location-store";

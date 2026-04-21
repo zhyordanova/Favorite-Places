@@ -5,12 +5,12 @@ import {
   useMediaLibraryPermissions,
 } from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { PICKER_OPTIONS } from "../../constants/imagePicker";
 import { usePermission } from "../../hooks/use-permission";
+import OutlinedButton from "../UI/OutlinedButton";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
@@ -81,7 +81,10 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
       return;
     }
 
-    const image = await launchImageLibraryAsync({ ...PICKER_OPTIONS, mediaTypes: ["images"] });
+    const image = await launchImageLibraryAsync({
+      ...PICKER_OPTIONS,
+      mediaTypes: ["images"],
+    });
     await processImageResult(image, false);
   }
 

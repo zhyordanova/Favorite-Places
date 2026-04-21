@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import Button from "../UI/Button";
 import ImagePicker from "./ImagePicker";
@@ -30,21 +30,11 @@ function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   }, []);
   
   function savePlaceHandler() {
-    if (!enteredTitle.trim()) {
-      Alert.alert("Missing Title", "Please enter a title for the place.");
-      return;
-    }
-    if (!selectedImage) {
-      Alert.alert("Missing Image", "Please take or pick an image.");
-      return;
-    }
-    if (!pickedLocation) {
-      Alert.alert("Missing Location", "Please pick a location.");
-      return;
-    }
-    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
+    const placeData = new Place(enteredTitle, selectedImage!, pickedLocation!);
     onCreatePlace(placeData);
   }
+
+  const isFormValid = enteredTitle.trim().length > 0 && !!selectedImage && !!pickedLocation;
 
   return (
     <ScrollView>
@@ -64,7 +54,7 @@ function PlaceForm({ onCreatePlace }: PlaceFormProps) {
         onPickLocation={pickLocationHandler}
         pickedLocation={pickedLocation}
       />
-      <Button onPress={savePlaceHandler}>Add Place</Button>
+      <Button onPress={savePlaceHandler} disabled={!isFormValid}>Add Place</Button>
     </ScrollView>
   );
 }
