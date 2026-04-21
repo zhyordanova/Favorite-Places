@@ -28,9 +28,12 @@ function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   const pickLocationHandler = useCallback((location: Location) => {
     setPickedLocation(location);
   }, []);
-
+  
   function savePlaceHandler() {
     if (!enteredTitle.trim()) {
+      Alert.alert("Missing Title", "Please enter a title for the place.");
+      return;
+    }
     if (!selectedImage) {
       Alert.alert("Missing Image", "Please take or pick an image.");
       return;
