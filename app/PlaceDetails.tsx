@@ -2,12 +2,12 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import OutlinedButton from "../components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { fetchPlaceDetails } from "@/util/database";
-import OutlinedButton from "../components/UI/OutlinedButton";
 import { Place } from "../models/place";
 
-function PlaceDetails() {
+export default function PlaceDetails() {
   const router = useRouter();
   const [fetchedPlace, setFetchedPlace] = useState<Place | undefined>();
 
@@ -61,8 +61,6 @@ function PlaceDetails() {
     </>
   );
 }
-
-export default PlaceDetails;
 
 const styles = StyleSheet.create({
   image: {

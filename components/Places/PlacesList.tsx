@@ -8,7 +8,7 @@ interface PlacesListProps {
   places: Place[];
 }
 
-function PlacesList({ places }: PlacesListProps) {
+export default function PlacesList({ places }: PlacesListProps) {
   const router = useRouter();
 
   function selectPlaceHandler(id: string) {
@@ -36,8 +36,6 @@ function PlacesList({ places }: PlacesListProps) {
     />
   );
 }
-
-export default PlacesList;
 
 const styles = StyleSheet.create({
   list: {

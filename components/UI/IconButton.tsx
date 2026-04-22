@@ -8,7 +8,7 @@ interface IconButtonProps {
   onClick: () => void;
 }
 
-function IconButton({ icon, size, color, onClick }: IconButtonProps) {
+export default function IconButton({ icon, size, color, onClick }: IconButtonProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
@@ -18,8 +18,6 @@ function IconButton({ icon, size, color, onClick }: IconButtonProps) {
     </Pressable>
   );
 }
-
-export default IconButton;
 
 const styles = StyleSheet.create({
   button: {

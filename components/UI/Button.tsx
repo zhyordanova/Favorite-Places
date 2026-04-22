@@ -8,7 +8,7 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-function Button({ children, onPress, disabled }: ButtonProps) {
+export default function Button({ children, onPress, disabled }: ButtonProps) {
   return (
     <Pressable
       style={({ pressed }) => [
@@ -23,8 +23,6 @@ function Button({ children, onPress, disabled }: ButtonProps) {
     </Pressable>
   );
 }
-
-export default Button;
 
 const styles = StyleSheet.create({
   button: {

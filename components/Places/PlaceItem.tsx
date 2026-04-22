@@ -8,7 +8,7 @@ interface PlaceItemProps {
   onSelect: (id: string) => void;
 }
 
-function PlaceItem({ place, onSelect }: PlaceItemProps) {
+export default function PlaceItem({ place, onSelect }: PlaceItemProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.item, pressed && styles.pressed]}
@@ -22,8 +22,6 @@ function PlaceItem({ place, onSelect }: PlaceItemProps) {
     </Pressable>
   );
 }
-
-export default PlaceItem;
 
 const styles = StyleSheet.create({
   item: {

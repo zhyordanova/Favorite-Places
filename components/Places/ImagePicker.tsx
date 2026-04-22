@@ -7,17 +7,17 @@ import {
 import * as MediaLibrary from "expo-media-library";
 import { Image, StyleSheet, Text, View } from "react-native";
 
+import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { PICKER_OPTIONS } from "../../constants/imagePicker";
 import { usePermission } from "../../hooks/use-permission";
-import OutlinedButton from "../UI/OutlinedButton";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
   selectedImage: string | undefined;
 }
 
-function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
+export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
   const [cameraPermissionInformation, requestCameraPermission] =
     useCameraPermissions();
   const [libraryPermissionInformation, requestLibraryPermission] =
@@ -110,8 +110,6 @@ function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
     </View>
   );
 }
-
-export default ImagePicker;
 
 const styles = StyleSheet.create({
   imagePreview: {

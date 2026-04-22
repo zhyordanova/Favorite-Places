@@ -9,7 +9,7 @@ interface OutlinedButtonProps {
   children: React.ReactNode;
 }
 
-function OutlinedButton({ onPress, icon, children }: OutlinedButtonProps) {
+export default function OutlinedButton({ onPress, icon, children }: OutlinedButtonProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
@@ -25,8 +25,6 @@ function OutlinedButton({ onPress, icon, children }: OutlinedButtonProps) {
     </Pressable>
   );
 }
-
-export default OutlinedButton;
 
 const styles = StyleSheet.create({
   button: {
