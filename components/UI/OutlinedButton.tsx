@@ -15,12 +15,14 @@ export default function OutlinedButton({ onPress, icon, children }: OutlinedButt
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
       onPress={onPress}
     >
+
       <Ionicons
         style={styles.icon}
         name={icon}
         size={18}
         color={Colors.primary500}
       />
+
       <Text style={styles.buttonText}>{children}</Text>
     </Pressable>
   );
@@ -38,12 +40,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.primary500,
   },
+
   pressed: {
     opacity: 0.7,
   },
+
   icon: {
     marginRight: 6,
   },
+  
   buttonText: {
     color: Colors.primary500,
   },

@@ -47,17 +47,21 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
           value={enteredTitle}
         />
       </View>
+
       <ImagePicker
         onTakeImage={takeImageHandler}
         selectedImage={selectedImage}
       />
+
       <LocationPicker
         onPickLocation={pickLocationHandler}
         pickedLocation={pickedLocation}
       />
+
       <Button onPress={savePlaceHandler} disabled={!isFormValid}>
         Add Place
       </Button>
+
     </ScrollView>
   );
 }
@@ -67,11 +71,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
   },
+
   label: {
     fontWeight: "bold",
     marginBottom: 4,
     color: Colors.primary500,
   },
+
   input: {
     marginTop: 8,
     paddingHorizontal: 4,

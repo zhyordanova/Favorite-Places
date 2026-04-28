@@ -125,13 +125,16 @@ export default function LocationPicker({
     <View>
       <View style={styles.mapPreview}>{locationPreview}</View>
       <View style={styles.actions}>
+
         <OutlinedButton icon="location" onPress={getLocationHandler}>
           Locate User
         </OutlinedButton>
+
         <OutlinedButton icon="map" onPress={pickOnMapHandler}>
           Pick on Map
         </OutlinedButton>
       </View>
+
     </View>
   );
 }
@@ -149,11 +152,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary500,
     borderWidth: 2,
   },
+
   actions: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
   },
+
   mapImage: {
     width: "100%",
     height: "100%",

@@ -53,6 +53,7 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: Colors.primary50 },
         }}
       >
+
         <Stack.Screen
           name="index"
           options={{
@@ -67,12 +68,14 @@ export default function RootLayout() {
             ),
           }}
         />
+
         <Stack.Screen name="AddPlace" options={{ title: "Add a new place" }} />
         <Stack.Screen name="Map" options={{ title: "Map" }} />
         <Stack.Screen
           name="PlaceDetails"
           options={{ title: "Loading Place" }}
         />
+
       </Stack>
       <StatusBar style="auto" />
     </>

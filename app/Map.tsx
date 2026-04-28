@@ -1,18 +1,42 @@
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 import MapView, { MapPressEvent, Marker } from "react-native-maps";
 
 import IconButton from "@/components/UI/IconButton";
+import MarkerGenerator from "@/components/UI/MarkerGenerator";
+import { useMarkerImage } from "@/hooks/useMarkerImage";
 import { setPickedMapLocation } from "@/store/picked-location-store";
+import { fetchPlaceDetails } from "@/util/database";
 
 export default function Map() {
   const navigation = useNavigation();
-  const { lat, lng } = useLocalSearchParams<{ lat?: string; lng?: string }>();
+  const { lat, lng, placeId } = useLocalSearchParams<{
+    lat?: string;
+    lng?: string;
+    placeId?: string;
+  }>();
 
-  const initialLocation = lat && lng && { lat: +lat, lng: +lng };
+  const initialLocation = lat && lng ? { lat: +lat, lng: +lng } : undefined;
 
   const [selectedLocation, setSelectedLocation] = useState(initialLocation);
+  const [imageUri, setImageUri] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!placeId) return;
+
+    fetchPlaceDetails(placeId)
+      .then((place) => {
+        if (!place?.imageUri) return;
+        setImageUri(place.imageUri);
+      })
+      .catch(console.log);
+  }, [placeId]);
+
+  const { markerImage, setMarkerImage, shouldGenerate } = useMarkerImage({
+    imageUri,
+    enabled: !!selectedLocation,
+  });
 
   const region = {
     latitude: initialLocation ? initialLocation.lat : 37.78825,
@@ -22,22 +46,15 @@ export default function Map() {
   };
 
   function selectLocationHandler(event: MapPressEvent) {
-    if (initialLocation) {
-      return;
-    }
+    if (initialLocation) return;
 
-    const lat = event.nativeEvent.coordinate.latitude;
-    const lng = event.nativeEvent.coordinate.longitude;
-
-    setSelectedLocation({ lat, lng });
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+    setSelectedLocation({ lat: latitude, lng: longitude });
   }
 
   const savePickedLocationHandler = useCallback(() => {
     if (!selectedLocation) {
-      Alert.alert(
-        "No location picked!",
-        "You have to pick a location (by tapping on the map) first!",
-      );
+      Alert.alert("No location picked!");
       return;
     }
 
@@ -61,27 +78,38 @@ export default function Map() {
             ) : null,
         }}
       />
+
+      {shouldGenerate && imageUri && (
+        <MarkerGenerator
+          key={placeId ?? "marker-generator"}
+          imageUri={imageUri}
+          onGenerated={setMarkerImage}
+        />
+      )}
+
       <MapView
         style={styles.map}
         initialRegion={region}
         onPress={selectLocationHandler}
       >
-        {selectedLocation && (
+
+        {selectedLocation && (!placeId || markerImage) && (
           <Marker
-            title="Picked Location"
+            key={markerImage ?? "default"}
             coordinate={{
               latitude: selectedLocation.lat,
               longitude: selectedLocation.lng,
             }}
+            title={!placeId ? "Picked Location" : undefined}
+            image={markerImage ? { uri: markerImage } : undefined}
           />
         )}
+        
       </MapView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  map: {
-    flex: 1,
-  },
+  map: { flex: 1 },
 });

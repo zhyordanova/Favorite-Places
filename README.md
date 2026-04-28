@@ -10,6 +10,7 @@ A React Native app for saving your favourite locations with photos, addresses, a
 - Reverse geocoding via Mapbox API
 - Persistent storage with SQLite
 - View place details and see location on map
+- Custom photo marker on the map — the place's photo is rendered as a styled pin (circle + pointer)
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ A React Native app for saving your favourite locations with photos, addresses, a
 - expo-location — GPS
 - expo-image-picker & expo-media-library — camera and gallery
 - react-native-maps — interactive map
+- react-native-view-shot — capturing custom marker view as image
 - Mapbox API — map preview and reverse geocoding
 
 ## Project Structure
@@ -26,6 +28,9 @@ A React Native app for saving your favourite locations with photos, addresses, a
 ```
 app/          # Screens (file-based routes)
 components/   # Reusable UI components
+  Places/     # Place list and form components
+  UI/         # Shared UI (buttons, MarkerGenerator, etc.)
+hooks/        # Custom hooks (useMarkerImage)
 models/       # Place class
 store/        # In-memory state (picked location)
 types/        # Shared TypeScript interfaces

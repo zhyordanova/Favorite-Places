@@ -2,9 +2,9 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { fetchPlaceDetails } from "@/util/database";
+import OutlinedButton from "../components/UI/OutlinedButton";
 import { Place } from "../models/place";
 
 export default function PlaceDetails() {
@@ -17,6 +17,7 @@ export default function PlaceDetails() {
       params: {
         lat: fetchedPlace?.location.lat.toString(),
         lng: fetchedPlace?.location.lng.toString(),
+        placeId,
       },
     });
   }
@@ -49,10 +50,12 @@ export default function PlaceDetails() {
       <Stack.Screen options={{ title: fetchedPlace.title }} />
       <ScrollView>
         <Image style={styles.image} source={{ uri: fetchedPlace?.imageUri }} />
+
         <View style={styles.locationContainer}>
           <View style={styles.addressContainer}>
             <Text style={styles.address}>{fetchedPlace.address}</Text>
           </View>
+
           <OutlinedButton icon="map" onPress={showOnMapHandler}>
             View on Map
           </OutlinedButton>
@@ -68,13 +71,16 @@ const styles = StyleSheet.create({
     minHeight: 300,
     width: "100%",
   },
+
   locationContainer: {
     justifyContent: "center",
     alignItems: "center",
   },
+
   addressContainer: {
     padding: 20,
   },
+
   address: {
     color: Colors.primary500,
     textAlign: "center",
