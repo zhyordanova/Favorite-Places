@@ -71,13 +71,12 @@ export default function RootLayout() {
 
         <Stack.Screen name="AddPlace" options={{ title: "Add a new place" }} />
         <Stack.Screen name="Map" options={{ title: "Map" }} />
-        
         <Stack.Screen
           name="PlaceDetails"
           options={{ title: "Loading Place" }}
         />
-      </Stack>
 
+      </Stack>
       <StatusBar style="auto" />
     </>
   );

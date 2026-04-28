@@ -19,7 +19,6 @@ A React Native app for saving your favourite locations with photos, addresses, a
 - expo-sqlite — local database
 - expo-location — GPS
 - expo-image-picker & expo-media-library — camera and gallery
-- expo-file-system — reading image files as base64
 - react-native-maps — interactive map
 - react-native-view-shot — capturing custom marker view as image
 - Mapbox API — map preview and reverse geocoding

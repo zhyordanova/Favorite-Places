@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useMemo } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import PlaceItem from "./PlaceItem";
@@ -10,6 +11,7 @@ interface PlacesListProps {
 
 export default function PlacesList({ places }: PlacesListProps) {
   const router = useRouter();
+  const reversedPlaces = useMemo(() => [...places].reverse(), [places]);
 
   function selectPlaceHandler(id: string) {
     router.push({ pathname: "/PlaceDetails", params: { placeId: id } });
@@ -28,7 +30,7 @@ export default function PlacesList({ places }: PlacesListProps) {
   return (
     <FlatList
       style={styles.list}
-      data={[...places].reverse()}
+      data={reversedPlaces}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <PlaceItem place={item} onSelect={selectPlaceHandler} />
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  
+
   fallbackText: {
     fontSize: 16,
   },

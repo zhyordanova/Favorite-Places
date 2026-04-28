@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import ViewShot from "react-native-view-shot";
 
@@ -12,50 +12,38 @@ type Props = {
 export default function MarkerGenerator({ imageUri, onGenerated }: Props) {
   const ref = useRef<ViewShot>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const generate = async () => {
+  const handleImageLoaded = useCallback(() => {
+    const timer = setTimeout(async () => {
       if (!ref.current) return;
-
       try {
         const uri = await ref.current.capture?.();
-        if (!cancelled && uri) {
-          onGenerated(uri);
-        }
+        if (uri) onGenerated(uri);
       } catch (e) {
         console.log("Marker generation error:", e);
       }
-    };
+    }, 150);
 
-    const timer = setTimeout(generate, 150);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [imageUri]);
+    return () => clearTimeout(timer);
+  }, [onGenerated]);
 
   return (
     <View style={styles.hidden}>
-
       <ViewShot ref={ref} options={{ format: "png", quality: 1 }}>
-
         <View style={styles.wrapper}>
           <View style={styles.shadow}>
-
             <View style={styles.circle}>
-              <Image source={{ uri: imageUri }} style={styles.image} />
+
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.image}
+                onLoadEnd={handleImageLoaded}
+              />
+              
             </View>
-
           </View>
-
           <View style={styles.tip} />
-
         </View>
-
       </ViewShot>
-      
     </View>
   );
 }
@@ -63,8 +51,9 @@ export default function MarkerGenerator({ imageUri, onGenerated }: Props) {
 const styles = StyleSheet.create({
   hidden: {
     position: "absolute",
-    left: -9999,
-    top: -9999,
+    top: 0,
+    left: 0,
+    zIndex: -1,
   },
 
   wrapper: {

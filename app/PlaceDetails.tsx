@@ -52,7 +52,6 @@ export default function PlaceDetails() {
         <Image style={styles.image} source={{ uri: fetchedPlace?.imageUri }} />
 
         <View style={styles.locationContainer}>
-          
           <View style={styles.addressContainer}>
             <Text style={styles.address}>{fetchedPlace.address}</Text>
           </View>
@@ -60,9 +59,7 @@ export default function PlaceDetails() {
           <OutlinedButton icon="map" onPress={showOnMapHandler}>
             View on Map
           </OutlinedButton>
-
         </View>
-
       </ScrollView>
     </>
   );

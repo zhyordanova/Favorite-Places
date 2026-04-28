@@ -1,4 +1,3 @@
-import * as FileSystem from "expo-file-system/legacy";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
@@ -27,14 +26,9 @@ export default function Map() {
     if (!placeId) return;
 
     fetchPlaceDetails(placeId)
-      .then(async (place) => {
+      .then((place) => {
         if (!place?.imageUri) return;
-
-        const base64 = await FileSystem.readAsStringAsync(place.imageUri, {
-          encoding: "base64",
-        });
-
-        setImageUri(`data:image/jpeg;base64,${base64}`);
+        setImageUri(place.imageUri);
       })
       .catch(console.log);
   }, [placeId]);
@@ -87,7 +81,7 @@ export default function Map() {
 
       {shouldGenerate && imageUri && (
         <MarkerGenerator
-          key={imageUri}
+          key={placeId ?? "marker-generator"}
           imageUri={imageUri}
           onGenerated={setMarkerImage}
         />

@@ -39,17 +39,13 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
 
   return (
     <ScrollView>
-
       <View style={styles.form}>
-
         <Text style={styles.label}>Title</Text>
-
         <TextInput
           style={styles.input}
           onChangeText={changeTitleHandler}
           value={enteredTitle}
         />
-
       </View>
 
       <ImagePicker
@@ -81,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     color: Colors.primary500,
   },
-  
+
   input: {
     marginTop: 8,
     paddingHorizontal: 4,
