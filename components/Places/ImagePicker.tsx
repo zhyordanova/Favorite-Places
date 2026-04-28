@@ -98,15 +98,21 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
 
   return (
     <View>
+
       <View style={styles.imagePreview}>{imagePreview}</View>
+
       <View style={styles.actions}>
+
         <OutlinedButton icon="camera" onPress={takeImageHandler}>
           Take Image
         </OutlinedButton>
+
         <OutlinedButton icon="image" onPress={pickImageHandler}>
           Pick from Gallery
         </OutlinedButton>
+
       </View>
+
     </View>
   );
 }
@@ -124,10 +130,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary500,
     borderWidth: 2,
   },
+
   image: {
     width: "100%",
     height: "100%",
   },
+  
   actions: {
     flexDirection: "row",
     justifyContent: "space-around",

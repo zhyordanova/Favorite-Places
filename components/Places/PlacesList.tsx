@@ -28,7 +28,7 @@ export default function PlacesList({ places }: PlacesListProps) {
   return (
     <FlatList
       style={styles.list}
-      data={places}
+      data={[...places].reverse()}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <PlaceItem place={item} onSelect={selectPlaceHandler} />
@@ -41,11 +41,13 @@ const styles = StyleSheet.create({
   list: {
     margin: 24,
   },
+
   fallbackContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+  
   fallbackText: {
     fontSize: 16,
   },

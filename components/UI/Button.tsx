@@ -38,12 +38,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 2,
   },
+
   pressed: {
     opacity: 0.7,
   },
+
   disabled: {
     opacity: 0.4,
   },
+  
   buttonText: {
     textAlign: "center",
     fontSize: 16,
