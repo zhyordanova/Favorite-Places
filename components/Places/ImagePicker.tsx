@@ -1,23 +1,26 @@
+import * as MediaLibrary from "expo-media-library";
 import {
   launchCameraAsync,
   launchImageLibraryAsync,
   useCameraPermissions,
   useMediaLibraryPermissions,
 } from "expo-image-picker";
-import * as MediaLibrary from "expo-media-library";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { PICKER_OPTIONS } from "../../constants/imagePicker";
-import { usePermission } from "../../hooks/use-permission";
+import { usePermission } from "../../hooks/usePermission";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
   selectedImage: string | undefined;
 }
 
-export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
+export default function ImagePicker({
+  onTakeImage,
+  selectedImage,
+}: ImagePickerProps) {
   const [cameraPermissionInformation, requestCameraPermission] =
     useCameraPermissions();
   const [libraryPermissionInformation, requestLibraryPermission] =
@@ -98,10 +101,8 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
 
   return (
     <View>
-
       <View style={styles.imagePreview}>{imagePreview}</View>
       <View style={styles.actions}>
-
         <OutlinedButton icon="camera" onPress={takeImageHandler}>
           Take Image
         </OutlinedButton>
@@ -110,7 +111,6 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
           Pick from Gallery
         </OutlinedButton>
       </View>
-
     </View>
   );
 }

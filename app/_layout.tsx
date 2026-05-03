@@ -1,14 +1,21 @@
-import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import IconButton from "@/components/UI/IconButton";
 import { Colors } from "@/constants/colors";
 import { init } from "@/util/database";
 
 void SplashScreen.preventAutoHideAsync();
+
+const stackScreenOptions = {
+  headerStyle: { backgroundColor: Colors.primary500 },
+  headerTintColor: Colors.gray700,
+  headerBackTitle: "Back",
+  contentStyle: { backgroundColor: Colors.primary50 },
+};
 
 export default function RootLayout() {
   const router = useRouter();
@@ -33,7 +40,7 @@ export default function RootLayout() {
 
   if (dbError) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.errorContainer}>
         <Text>Failed to initialize the database. Please restart the app.</Text>
       </View>
     );
@@ -45,15 +52,7 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack
-        screenOptions={{
-          headerStyle: { backgroundColor: Colors.primary500 },
-          headerTintColor: Colors.gray700,
-          headerBackTitle: "Back",
-          contentStyle: { backgroundColor: Colors.primary50 },
-        }}
-      >
-
+      <Stack screenOptions={stackScreenOptions}>
         <Stack.Screen
           name="index"
           options={{
@@ -75,9 +74,16 @@ export default function RootLayout() {
           name="PlaceDetails"
           options={{ title: "Loading Place" }}
         />
-
       </Stack>
       <StatusBar style="auto" />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

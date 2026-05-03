@@ -21,6 +21,7 @@ export default function Map() {
 
   const [selectedLocation, setSelectedLocation] = useState(initialLocation);
   const [imageUri, setImageUri] = useState<string | undefined>();
+  const [markerCaptureFailed, setMarkerCaptureFailed] = useState(false);
 
   useEffect(() => {
     if (!placeId) return;
@@ -32,6 +33,10 @@ export default function Map() {
       })
       .catch(console.log);
   }, [placeId]);
+
+  useEffect(() => {
+    setMarkerCaptureFailed(false);
+  }, [imageUri, placeId]);
 
   const { markerImage, setMarkerImage, shouldGenerate } = useMarkerImage({
     imageUri,
@@ -62,6 +67,18 @@ export default function Map() {
     navigation.goBack();
   }, [selectedLocation, navigation]);
 
+  const markerGeneratedHandler = useCallback(
+    (uri: string) => {
+      setMarkerCaptureFailed(false);
+      setMarkerImage(uri);
+    },
+    [setMarkerImage],
+  );
+
+  const markerGenerationFailedHandler = useCallback(() => {
+    setMarkerCaptureFailed(true);
+  }, []);
+
   return (
     <>
       <Stack.Screen
@@ -83,7 +100,8 @@ export default function Map() {
         <MarkerGenerator
           key={placeId ?? "marker-generator"}
           imageUri={imageUri}
-          onGenerated={setMarkerImage}
+          onGenerated={markerGeneratedHandler}
+          onFailed={markerGenerationFailedHandler}
         />
       )}
 
@@ -92,19 +110,18 @@ export default function Map() {
         initialRegion={region}
         onPress={selectLocationHandler}
       >
-
-        {selectedLocation && (!placeId || markerImage) && (
-          <Marker
-            key={markerImage ?? "default"}
-            coordinate={{
-              latitude: selectedLocation.lat,
-              longitude: selectedLocation.lng,
-            }}
-            title={!placeId ? "Picked Location" : undefined}
-            image={markerImage ? { uri: markerImage } : undefined}
-          />
-        )}
-        
+        {selectedLocation &&
+          (!placeId || markerImage || markerCaptureFailed) && (
+            <Marker
+              key={markerImage ?? "default"}
+              coordinate={{
+                latitude: selectedLocation.lat,
+                longitude: selectedLocation.lng,
+              }}
+              title={!placeId ? "Picked Location" : undefined}
+              image={markerImage ? { uri: markerImage } : undefined}
+            />
+          )}
       </MapView>
     </>
   );

@@ -20,12 +20,15 @@ export default function AllPlaces() {
         try {
           const places = await fetchPlaces();
           setLoadedPlaces(places);
+          
         } catch {
           setError(true);
+          
           Alert.alert(
             "Error",
             "Could not load places. Please restart the app.",
           );
+
         } finally {
           setIsLoading(false);
         }
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  
+
   errorText: {
     color: Colors.primary500,
     fontSize: 16,
