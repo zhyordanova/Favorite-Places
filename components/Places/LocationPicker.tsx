@@ -8,7 +8,7 @@ import { Alert, Image, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
-import { usePermission } from "../../hooks/use-permission";
+import { usePermission } from "../../hooks/usePermission";
 import { consumePickedMapLocation } from "../../store/picked-location-store";
 import { Location } from "../../types";
 import { getAddress, getMapPreview } from "../../util/location";
@@ -125,7 +125,6 @@ export default function LocationPicker({
     <View>
       <View style={styles.mapPreview}>{locationPreview}</View>
       <View style={styles.actions}>
-
         <OutlinedButton icon="location" onPress={getLocationHandler}>
           Locate User
         </OutlinedButton>
@@ -134,7 +133,6 @@ export default function LocationPicker({
           Pick on Map
         </OutlinedButton>
       </View>
-
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import ViewShot from "react-native-view-shot";
 
@@ -7,24 +7,46 @@ import { Colors } from "@/constants/colors";
 type Props = {
   imageUri: string;
   onGenerated: (uri: string) => void;
+  onFailed?: () => void;
 };
 
-export default function MarkerGenerator({ imageUri, onGenerated }: Props) {
+export default function MarkerGenerator({
+  imageUri,
+  onGenerated,
+  onFailed,
+}: Props) {
   const ref = useRef<ViewShot>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const handleImageLoaded = useCallback(() => {
-    const timer = setTimeout(async () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(async () => {
       if (!ref.current) return;
+
       try {
         const uri = await ref.current.capture?.();
-        if (uri) onGenerated(uri);
-      } catch (e) {
-        console.log("Marker generation error:", e);
+        if (uri) {
+          onGenerated(uri);
+          return;
+        }
+
+        onFailed?.();
+      } catch {
+        onFailed?.();
       }
     }, 150);
-
-    return () => clearTimeout(timer);
-  }, [onGenerated]);
+  }, [onFailed, onGenerated]);
 
   return (
     <View style={styles.hidden}>
@@ -32,13 +54,11 @@ export default function MarkerGenerator({ imageUri, onGenerated }: Props) {
         <View style={styles.wrapper}>
           <View style={styles.shadow}>
             <View style={styles.circle}>
-
               <Image
                 source={{ uri: imageUri }}
                 style={styles.image}
                 onLoadEnd={handleImageLoaded}
               />
-              
             </View>
           </View>
           <View style={styles.tip} />
