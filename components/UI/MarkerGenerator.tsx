@@ -40,7 +40,7 @@ export default function MarkerGenerator({
           onGenerated(uri);
           return;
         }
-        
+
         onFailed?.();
       } catch {
         onFailed?.();
