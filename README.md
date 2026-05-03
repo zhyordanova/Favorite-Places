@@ -46,8 +46,6 @@ util/         # Database and API utilities
 
 ## Demo Flow
 
-> Replace only the image paths below (e.g. `assets/screenshots/01-home.png`) with your real files.
-
 1. Open the app and mention startup DB initialization (SplashScreen waits for SQLite init)
 
    ![Home screen](assets/screenshots/01-home-empty.png)
