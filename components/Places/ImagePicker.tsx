@@ -7,10 +7,10 @@ import {
 } from "expo-image-picker";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../UI/OutlinedButton";
-import { Colors } from "../../constants/colors";
-import { PICKER_OPTIONS } from "../../constants/imagePicker";
-import { usePermission } from "../../hooks/usePermission";
+import OutlinedButton from "@/components/UI/OutlinedButton";
+import { Colors } from "@/constants/colors";
+import { PICKER_OPTIONS } from "@/constants/imagePicker";
+import { usePermission } from "@/hooks/usePermission";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;

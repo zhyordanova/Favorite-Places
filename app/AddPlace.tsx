@@ -1,9 +1,9 @@
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 
-import PlaceForm from "../components/Places/PlaceForm";
-import { Place } from "../models/place";
-import { insertPlace } from "../util/database";
+import PlaceForm from "@/components/Places/PlaceForm";
+import { Place } from "@/models/place";
+import { insertPlace } from "@/util/database";
 
 export default function AddPlace() {
   const router = useRouter();

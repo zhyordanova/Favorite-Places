@@ -2,8 +2,8 @@ import { useRouter } from "expo-router";
 import { useMemo } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
-import PlaceItem from "./PlaceItem";
-import { Place } from "../../models/place";
+import PlaceItem from "@/components/Places/PlaceItem";
+import { Place } from "@/models/place";
 
 interface PlacesListProps {
   places: Place[];
