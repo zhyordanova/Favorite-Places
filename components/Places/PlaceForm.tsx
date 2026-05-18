@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
-import Button from "@/components/UI/Button";
 import ImagePicker from "@/components/Places/ImagePicker";
 import LocationPicker from "@/components/Places/LocationPicker";
+import Button from "@/components/UI/Button";
 import { Colors } from "@/constants/colors";
 import { Place } from "@/models/place";
 import { Location } from "@/types";

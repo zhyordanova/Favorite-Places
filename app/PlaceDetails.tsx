@@ -2,8 +2,8 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from "@/constants/colors";
 import OutlinedButton from "@/components/UI/OutlinedButton";
+import { Colors } from "@/constants/colors";
 import { Place } from "@/models/place";
 import { fetchPlaceDetails } from "@/util/database";
 

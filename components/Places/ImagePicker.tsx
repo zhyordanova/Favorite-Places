@@ -1,10 +1,10 @@
-import * as MediaLibrary from "expo-media-library";
 import {
-  launchCameraAsync,
-  launchImageLibraryAsync,
-  useCameraPermissions,
-  useMediaLibraryPermissions,
+    launchCameraAsync,
+    launchImageLibraryAsync,
+    useCameraPermissions,
+    useMediaLibraryPermissions,
 } from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
