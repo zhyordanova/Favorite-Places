@@ -126,7 +126,7 @@ export default function LocationPicker({
         }
       }
 
-      let location;
+      let location: LocationModule.LocationObject;
       try {
         location = await LocationModule.getCurrentPositionAsync({
           accuracy: LocationModule.Accuracy.High,

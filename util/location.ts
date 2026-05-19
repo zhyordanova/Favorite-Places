@@ -16,11 +16,11 @@ function getRequiredMapboxAccessToken(): string {
   return token;
 }
 
-export function getMapPreview(lat: number, lng: number): string {
+export function getMapPreview(lat: number, lng: number): string | undefined {
   const token = getOptionalMapboxAccessToken();
 
   if (!token) {
-    return "";
+    return undefined;
   }
 
   return `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+ff0000(${lng},${lat})/${lng},${lat},14/400x200?access_token=${token}`;

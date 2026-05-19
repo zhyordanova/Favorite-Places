@@ -9,7 +9,7 @@ export const ALERT_MESSAGES = {
   insufficientPermissionsTitle: "Insufficient Permissions!",
   configErrorTitle: "Configuration Error",
   configErrorMessage:
-    "Location services are not configured correctly. Please try again later.",
+    "Map or geocoding configuration is missing or invalid. Please check the access token and try again later.",
   geocodingFailedTitle: "Geocoding Failed",
   locationServicesDisabledTitle: "Location Services Disabled",
   locationServicesDisabledMessage:
