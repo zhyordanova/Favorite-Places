@@ -1,15 +1,22 @@
-import {
-  getCurrentPositionAsync,
-  useForegroundPermissions,
-} from "expo-location";
+import * as LocationModule from "expo-location";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback } from "react";
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
+import { Radius } from "@/constants/layout";
+import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
-import { consumePickedMapLocation } from "@/store/picked-location-store";
+import { usePickedLocation } from "@/store/picked-location-context";
 import { Location } from "@/types";
 import { getAddress, getMapPreview } from "@/util/location";
 
@@ -22,8 +29,10 @@ export default function LocationPicker({
   onPickLocation,
   pickedLocation,
 }: LocationPickerProps) {
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+
   const [locationPermissionInformation, requestPermission] =
-    useForegroundPermissions();
+    LocationModule.useForegroundPermissions();
 
   const verifyLocationPermission = usePermission(
     locationPermissionInformation,
@@ -32,35 +41,39 @@ export default function LocationPicker({
   );
 
   const router = useRouter();
+  const { pickedMapLocation, clearPickedMapLocation } = usePickedLocation();
 
   useFocusEffect(
     useCallback(() => {
       async function storePickedLocation() {
-        const mapPickedLocation = consumePickedMapLocation();
-
-        if (!mapPickedLocation) {
+        if (!pickedMapLocation) {
           return;
         }
+
+        setIsFetchingLocation(true);
 
         let address: string;
         try {
           address = await getAddress(
-            mapPickedLocation.lat,
-            mapPickedLocation.lng,
+            pickedMapLocation.lat,
+            pickedMapLocation.lng,
           );
         } catch {
           Alert.alert(
             "Geocoding Failed",
             "Could not retrieve the address for the selected location.",
           );
+          setIsFetchingLocation(false);
           return;
         }
 
-        onPickLocation({ ...mapPickedLocation, address });
+        onPickLocation({ ...pickedMapLocation, address });
+        clearPickedMapLocation();
+        setIsFetchingLocation(false);
       }
 
       storePickedLocation();
-    }, [onPickLocation]),
+    }, [clearPickedMapLocation, onPickLocation, pickedMapLocation]),
   );
 
   async function verifiedPermissions(): Promise<boolean> {
@@ -68,49 +81,94 @@ export default function LocationPicker({
   }
 
   async function getLocationHandler(): Promise<void> {
-    const hasPermission = await verifiedPermissions();
-
-    if (!hasPermission) {
-      return;
-    }
-
-    let location;
     try {
-      location = await getCurrentPositionAsync();
+      setIsFetchingLocation(true);
+
+      const hasPermission = await verifiedPermissions();
+
+      if (!hasPermission) {
+        Alert.alert(
+          "Permission Denied",
+          "Location permission is required to use this feature.",
+        );
+        setIsFetchingLocation(false);
+        return;
+      }
+
+      if (Platform.OS === "android") {
+        const hasServicesEnabled =
+          await LocationModule.hasServicesEnabledAsync();
+
+        if (!hasServicesEnabled) {
+          Alert.alert(
+            "Location Services Disabled",
+            "Please enable location services on your device to use this feature.",
+          );
+          setIsFetchingLocation(false);
+          return;
+        }
+      }
+
+      let location;
+      try {
+        location = await LocationModule.getCurrentPositionAsync({
+          accuracy: LocationModule.Accuracy.High,
+        });
+      } catch {
+        Alert.alert(
+          "Location Unavailable",
+          "Could not fetch your location. Make sure location services are enabled on your device.",
+        );
+        setIsFetchingLocation(false);
+        return;
+      }
+
+      const currentLocation = {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
+      };
+
+      let address: string;
+      try {
+        address = await getAddress(currentLocation.lat, currentLocation.lng);
+      } catch {
+        Alert.alert(
+          "Geocoding Failed",
+          "Could not retrieve the address for your location.",
+        );
+        setIsFetchingLocation(false);
+        return;
+      }
+
+      onPickLocation({ ...currentLocation, address });
+      setIsFetchingLocation(false);
     } catch {
       Alert.alert(
-        "Location Unavailable",
-        "Could not fetch your location. Make sure location services are enabled on your device.",
+        "Unexpected Error",
+        "An unexpected error occurred while getting your location.",
       );
-      return;
+      setIsFetchingLocation(false);
     }
-
-    const currentLocation = {
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
-    };
-
-    let address: string;
-    try {
-      address = await getAddress(currentLocation.lat, currentLocation.lng);
-    } catch {
-      Alert.alert(
-        "Geocoding Failed",
-        "Could not retrieve the address for your location.",
-      );
-      return;
-    }
-
-    onPickLocation({ ...currentLocation, address });
   }
 
   function pickOnMapHandler(): void {
     router.navigate("/Map");
   }
 
-  let locationPreview = <Text>No location picked yet.</Text>;
+  let locationPreview = (
+    <Text style={sharedStyles.statusText}>No location picked yet.</Text>
+  );
 
-  if (pickedLocation) {
+  if (isFetchingLocation) {
+    locationPreview = (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="small" color={Colors.primary700} />
+        <Text style={sharedStyles.statusText}>Fetching location...</Text>
+      </View>
+    );
+  }
+
+  if (pickedLocation && !isFetchingLocation) {
     locationPreview = (
       <Image
         style={styles.mapImage}
@@ -123,13 +181,21 @@ export default function LocationPicker({
 
   return (
     <View>
-      <View style={styles.mapPreview}>{locationPreview}</View>
-      <View style={styles.actions}>
-        <OutlinedButton icon="location" onPress={getLocationHandler}>
-          Locate User
+      <View style={sharedStyles.pickerPreview}>{locationPreview}</View>
+      <View style={sharedStyles.pickerActions}>
+        <OutlinedButton
+          icon="location"
+          onPress={getLocationHandler}
+          disabled={isFetchingLocation}
+        >
+          {isFetchingLocation ? "Locating..." : "Locate User"}
         </OutlinedButton>
 
-        <OutlinedButton icon="map" onPress={pickOnMapHandler}>
+        <OutlinedButton
+          icon="map"
+          onPress={pickOnMapHandler}
+          disabled={isFetchingLocation}
+        >
           Pick on Map
         </OutlinedButton>
       </View>
@@ -138,28 +204,14 @@ export default function LocationPicker({
 }
 
 const styles = StyleSheet.create({
-  mapPreview: {
-    height: 200,
-    marginVertical: 12,
-    marginHorizontal: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 4,
-    overflow: "hidden",
-    backgroundColor: Colors.primary100,
-    borderColor: Colors.primary500,
-    borderWidth: 2,
-  },
-
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-
   mapImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 4,
+    borderRadius: Radius.sm,
+  },
+
+  loadingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

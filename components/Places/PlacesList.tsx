@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import PlaceItem from "@/components/Places/PlaceItem";
+import { Spacing } from "@/constants/layout";
 import { Place } from "@/models/place";
 
 interface PlacesListProps {
@@ -41,7 +42,7 @@ export default function PlacesList({ places }: PlacesListProps) {
 
 const styles = StyleSheet.create({
   list: {
-    margin: 24,
+    margin: Spacing.lg,
   },
 
   fallbackContainer: {

@@ -1,6 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "@/constants/colors";
+import { Radius, Spacing } from "@/constants/layout";
 import { Place } from "@/models/place";
 
 interface PlaceItemProps {
@@ -28,9 +29,9 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginVertical: 12,
+    marginVertical: Spacing.md,
     backgroundColor: Colors.primary500,
-    borderRadius: 6,
+    borderRadius: Radius.md,
     elevation: 2,
     shadowColor: "black",
     shadowOffset: { width: 1, height: 1 },
@@ -45,13 +46,13 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     height: 100,
-    borderBottomLeftRadius: 4,
-    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: Radius.sm,
+    borderTopLeftRadius: Radius.sm,
   },
 
   infoContainer: {
     flex: 2,
-    padding: 12,
+    padding: Spacing.md,
   },
 
   title: {
