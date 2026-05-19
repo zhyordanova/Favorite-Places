@@ -7,7 +7,7 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
