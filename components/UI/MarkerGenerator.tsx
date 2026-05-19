@@ -3,6 +3,7 @@ import { Image, StyleSheet, View } from "react-native";
 import ViewShot from "react-native-view-shot";
 
 import { Colors } from "@/constants/colors";
+import { Radius } from "@/constants/layout";
 
 type Props = {
   imageUri: string;
@@ -85,13 +86,13 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
     elevation: 6,
-    borderRadius: 40,
+    borderRadius: Radius.full,
   },
 
   circle: {
     width: 80,
     height: 80,
-    borderRadius: 40,
+    borderRadius: Radius.full,
     overflow: "hidden",
     borderWidth: 4,
     borderColor: Colors.primary200,

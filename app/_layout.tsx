@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import IconButton from "@/components/UI/IconButton";
 import { Colors } from "@/constants/colors";
+import { PickedLocationProvider } from "@/store/picked-location-context";
 import { init } from "@/util/database";
 
 void SplashScreen.preventAutoHideAsync();
@@ -52,29 +53,34 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack screenOptions={stackScreenOptions}>
-        <Stack.Screen
-          name="index"
-          options={{
-            title: "Your Favorite Places",
-            headerRight: ({ tintColor }) => (
-              <IconButton
-                icon="add"
-                size={24}
-                color={tintColor}
-                onClick={() => router.navigate("/AddPlace")}
-              />
-            ),
-          }}
-        />
+      <PickedLocationProvider>
+        <Stack screenOptions={stackScreenOptions}>
+          <Stack.Screen
+            name="index"
+            options={{
+              title: "Your Favorite Places",
+              headerRight: ({ tintColor }) => (
+                <IconButton
+                  icon="add"
+                  size={24}
+                  color={tintColor}
+                  onClick={() => router.navigate("/AddPlace")}
+                />
+              ),
+            }}
+          />
 
-        <Stack.Screen name="AddPlace" options={{ title: "Add a new place" }} />
-        <Stack.Screen name="Map" options={{ title: "Map" }} />
-        <Stack.Screen
-          name="PlaceDetails"
-          options={{ title: "Loading Place" }}
-        />
-      </Stack>
+          <Stack.Screen
+            name="AddPlace"
+            options={{ title: "Add a new place" }}
+          />
+          <Stack.Screen name="Map" options={{ title: "Map" }} />
+          <Stack.Screen
+            name="PlaceDetails"
+            options={{ title: "Loading Place" }}
+          />
+        </Stack>
+      </PickedLocationProvider>
       <StatusBar style="auto" />
     </>
   );

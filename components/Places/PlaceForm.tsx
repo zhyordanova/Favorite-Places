@@ -5,6 +5,7 @@ import ImagePicker from "@/components/Places/ImagePicker";
 import LocationPicker from "@/components/Places/LocationPicker";
 import Button from "@/components/UI/Button";
 import { Colors } from "@/constants/colors";
+import { Spacing } from "@/constants/layout";
 import { Place } from "@/models/place";
 import { Location } from "@/types";
 
@@ -68,19 +69,19 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
 const styles = StyleSheet.create({
   form: {
     flex: 1,
-    padding: 24,
+    padding: Spacing.lg,
   },
 
   label: {
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
     color: Colors.primary500,
   },
 
   input: {
-    marginTop: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 8,
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
+    paddingVertical: Spacing.sm,
     fontSize: 16,
     borderColor: Colors.primary500,
     borderWidth: 2,

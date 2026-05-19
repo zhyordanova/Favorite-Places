@@ -6,11 +6,12 @@ import MapView, { MapPressEvent, Marker } from "react-native-maps";
 import IconButton from "@/components/UI/IconButton";
 import MarkerGenerator from "@/components/UI/MarkerGenerator";
 import { useMarkerImage } from "@/hooks/useMarkerImage";
-import { setPickedMapLocation } from "@/store/picked-location-store";
+import { usePickedLocation } from "@/store/picked-location-context";
 import { fetchPlaceDetails } from "@/util/database";
 
 export default function Map() {
   const navigation = useNavigation();
+  const { setPickedMapLocation } = usePickedLocation();
   const { lat, lng, placeId } = useLocalSearchParams<{
     lat?: string;
     lng?: string;
@@ -65,7 +66,7 @@ export default function Map() {
 
     setPickedMapLocation(selectedLocation);
     navigation.goBack();
-  }, [selectedLocation, navigation]);
+  }, [selectedLocation, navigation, setPickedMapLocation]);
 
   const markerGeneratedHandler = useCallback(
     (uri: string) => {

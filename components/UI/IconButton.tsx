@@ -1,6 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet } from "react-native";
 
+import { Spacing } from "@/constants/layout";
+
 interface IconButtonProps {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   size: number;
@@ -26,7 +28,7 @@ export default function IconButton({
 
 const styles = StyleSheet.create({
   button: {
-    margin: 6,
+    margin: Spacing.xsm,
     justifyContent: "center",
     alignItems: "center",
   },

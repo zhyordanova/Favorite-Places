@@ -8,8 +8,8 @@ import * as MediaLibrary from "expo-media-library";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
-import { Colors } from "@/constants/colors";
 import { PICKER_OPTIONS } from "@/constants/imagePicker";
+import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
 
 interface ImagePickerProps {
@@ -91,7 +91,9 @@ export default function ImagePicker({
     await processImageResult(image, false);
   }
 
-  let imagePreview = <Text>No image taken yet.</Text>;
+  let imagePreview = (
+    <Text style={sharedStyles.statusText}>No image taken yet.</Text>
+  );
 
   if (selectedImage) {
     imagePreview = (
@@ -101,8 +103,8 @@ export default function ImagePicker({
 
   return (
     <View>
-      <View style={styles.imagePreview}>{imagePreview}</View>
-      <View style={styles.actions}>
+      <View style={sharedStyles.pickerPreview}>{imagePreview}</View>
+      <View style={sharedStyles.pickerActions}>
         <OutlinedButton icon="camera" onPress={takeImageHandler}>
           Take Image
         </OutlinedButton>
@@ -116,27 +118,8 @@ export default function ImagePicker({
 }
 
 const styles = StyleSheet.create({
-  imagePreview: {
-    height: 200,
-    marginVertical: 12,
-    marginHorizontal: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 4,
-    overflow: "hidden",
-    backgroundColor: Colors.primary100,
-    borderColor: Colors.primary500,
-    borderWidth: 2,
-  },
-
   image: {
     width: "100%",
     height: "100%",
-  },
-
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
   },
 });
