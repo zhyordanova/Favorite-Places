@@ -6,8 +6,10 @@ import LocationPicker from "@/components/Places/LocationPicker";
 import Button from "@/components/UI/Button";
 import { Colors } from "@/constants/colors";
 import { Spacing } from "@/constants/layout";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
 import { Location } from "@/types";
+import { showAlert } from "@/util/alerts";
 
 interface PlaceFormProps {
   onCreatePlace: (place: Place) => void;
@@ -31,7 +33,17 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   }, []);
 
   function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage!, pickedLocation!);
+    const trimmedTitle = enteredTitle.trim();
+
+    if (!trimmedTitle || !selectedImage || !pickedLocation) {
+      showAlert(
+        ALERT_MESSAGES.invalidFormTitle,
+        ALERT_MESSAGES.invalidFormMessage,
+      );
+      return;
+    }
+
+    const placeData = new Place(trimmedTitle, selectedImage, pickedLocation);
     onCreatePlace(placeData);
   }
 

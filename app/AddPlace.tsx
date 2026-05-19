@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
-import { Alert } from "react-native";
 
 import PlaceForm from "@/components/Places/PlaceForm";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
+import { showErrorAlert } from "@/util/alerts";
 import { insertPlace } from "@/util/database";
 
 export default function AddPlace() {
@@ -13,7 +14,7 @@ export default function AddPlace() {
       await insertPlace(place);
       router.back();
     } catch {
-      Alert.alert("Error", "Could not save the place. Please try again.");
+      showErrorAlert(ALERT_MESSAGES.savePlaceFailed);
     }
   }
 

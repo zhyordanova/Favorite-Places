@@ -1,10 +1,12 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import PlacesList from "@/components/Places/PlacesList";
 import { Colors } from "@/constants/colors";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
+import { showErrorAlert } from "@/util/alerts";
 import { fetchPlaces } from "@/util/database";
 
 export default function AllPlaces() {
@@ -22,11 +24,7 @@ export default function AllPlaces() {
           setLoadedPlaces(places);
         } catch {
           setError(true);
-
-          Alert.alert(
-            "Error",
-            "Could not load places. Please restart the app.",
-          );
+          showErrorAlert(ALERT_MESSAGES.loadPlacesFailed);
         } finally {
           setIsLoading(false);
         }

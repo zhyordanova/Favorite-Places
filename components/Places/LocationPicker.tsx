@@ -3,7 +3,6 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Platform,
   StyleSheet,
@@ -14,10 +13,12 @@ import {
 import OutlinedButton from "@/components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { Radius } from "@/constants/layout";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
 import { usePickedLocation } from "@/store/picked-location-context";
 import { Location } from "@/types";
+import { showAlert } from "@/util/alerts";
 import { getAddress, getMapPreview } from "@/util/location";
 
 interface LocationPickerProps {
@@ -25,11 +26,35 @@ interface LocationPickerProps {
   pickedLocation: Location | undefined;
 }
 
+function isMapboxConfigError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    error.message.includes("EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN")
+  );
+}
+
 export default function LocationPicker({
   onPickLocation,
   pickedLocation,
 }: LocationPickerProps) {
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+
+  function stopFetchingWithAlert(title: string, message: string): void {
+    showAlert(title, message);
+    setIsFetchingLocation(false);
+  }
+
+  function showGeocodingAlert(error: unknown, fallbackMessage: string): void {
+    if (isMapboxConfigError(error)) {
+      showAlert(
+        ALERT_MESSAGES.configErrorTitle,
+        ALERT_MESSAGES.configErrorMessage,
+      );
+      return;
+    }
+
+    showAlert(ALERT_MESSAGES.geocodingFailedTitle, fallbackMessage);
+  }
 
   const [locationPermissionInformation, requestPermission] =
     LocationModule.useForegroundPermissions();
@@ -58,9 +83,9 @@ export default function LocationPicker({
             pickedMapLocation.lng,
           );
           onPickLocation({ ...pickedMapLocation, address });
-        } catch {
-          Alert.alert(
-            "Geocoding Failed",
+        } catch (error) {
+          showGeocodingAlert(
+            error,
             "Could not retrieve the address for the selected location.",
           );
         } finally {
@@ -93,26 +118,24 @@ export default function LocationPicker({
           await LocationModule.hasServicesEnabledAsync();
 
         if (!hasServicesEnabled) {
-          Alert.alert(
-            "Location Services Disabled",
-            "Please enable location services on your device to use this feature.",
+          stopFetchingWithAlert(
+            ALERT_MESSAGES.locationServicesDisabledTitle,
+            ALERT_MESSAGES.locationServicesDisabledMessage,
           );
-          setIsFetchingLocation(false);
           return;
         }
       }
 
-      let location;
+      let location: LocationModule.LocationObject;
       try {
         location = await LocationModule.getCurrentPositionAsync({
           accuracy: LocationModule.Accuracy.High,
         });
       } catch {
-        Alert.alert(
-          "Location Unavailable",
-          "Could not fetch your location. Make sure location services are enabled on your device.",
+        stopFetchingWithAlert(
+          ALERT_MESSAGES.locationUnavailableTitle,
+          ALERT_MESSAGES.locationUnavailableMessage,
         );
-        setIsFetchingLocation(false);
         return;
       }
 
@@ -124,9 +147,9 @@ export default function LocationPicker({
       let address: string;
       try {
         address = await getAddress(currentLocation.lat, currentLocation.lng);
-      } catch {
-        Alert.alert(
-          "Geocoding Failed",
+      } catch (error) {
+        showGeocodingAlert(
+          error,
           "Could not retrieve the address for your location.",
         );
         setIsFetchingLocation(false);
@@ -136,11 +159,10 @@ export default function LocationPicker({
       onPickLocation({ ...currentLocation, address });
       setIsFetchingLocation(false);
     } catch {
-      Alert.alert(
-        "Unexpected Error",
-        "An unexpected error occurred while getting your location.",
+      stopFetchingWithAlert(
+        ALERT_MESSAGES.unexpectedErrorTitle,
+        ALERT_MESSAGES.unexpectedErrorMessage,
       );
-      setIsFetchingLocation(false);
     }
   }
 
@@ -162,13 +184,17 @@ export default function LocationPicker({
   }
 
   if (pickedLocation && !isFetchingLocation) {
-    locationPreview = (
+    const mapPreviewUri = getMapPreview(pickedLocation.lat, pickedLocation.lng);
+
+    locationPreview = mapPreviewUri ? (
       <Image
         style={styles.mapImage}
         source={{
-          uri: getMapPreview(pickedLocation.lat, pickedLocation.lng),
+          uri: mapPreviewUri,
         }}
       />
+    ) : (
+      <Text style={sharedStyles.statusText}>Map preview unavailable.</Text>
     );
   }
 

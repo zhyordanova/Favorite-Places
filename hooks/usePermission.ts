@@ -1,5 +1,7 @@
 import { PermissionStatus } from "expo-modules-core";
-import { Alert } from "react-native";
+
+import { ALERT_MESSAGES } from "@/constants/messages";
+import { showAlert } from "@/util/alerts";
 
 interface PermissionInfo {
   status: PermissionStatus;
@@ -26,7 +28,7 @@ export function usePermission(
     }
 
     if (permissionInformation.status === PermissionStatus.DENIED) {
-      Alert.alert("Insufficient Permissions!", deniedMessage);
+      showAlert(ALERT_MESSAGES.insufficientPermissionsTitle, deniedMessage);
       return false;
     }
 
