@@ -1,12 +1,14 @@
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import MapView, { MapPressEvent, Marker } from "react-native-maps";
 
 import IconButton from "@/components/UI/IconButton";
 import MarkerGenerator from "@/components/UI/MarkerGenerator";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { useMarkerImage } from "@/hooks/useMarkerImage";
 import { usePickedLocation } from "@/store/picked-location-context";
+import { showAlert } from "@/util/alerts";
 import { fetchPlaceDetails } from "@/util/database";
 
 export default function Map() {
@@ -32,7 +34,9 @@ export default function Map() {
         if (!place?.imageUri) return;
         setImageUri(place.imageUri);
       })
-      .catch(console.log);
+      .catch(() => {
+        // Fallback to default marker if place details are unavailable.
+      });
   }, [placeId]);
 
   useEffect(() => {
@@ -60,7 +64,7 @@ export default function Map() {
 
   const savePickedLocationHandler = useCallback(() => {
     if (!selectedLocation) {
-      Alert.alert("No location picked!");
+      showAlert(ALERT_MESSAGES.errorTitle, ALERT_MESSAGES.noLocationPicked);
       return;
     }
 

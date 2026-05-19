@@ -1,20 +1,15 @@
 import { useCallback, useState } from "react";
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import ImagePicker from "@/components/Places/ImagePicker";
 import LocationPicker from "@/components/Places/LocationPicker";
 import Button from "@/components/UI/Button";
 import { Colors } from "@/constants/colors";
 import { Spacing } from "@/constants/layout";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
 import { Location } from "@/types";
+import { showAlert } from "@/util/alerts";
 
 interface PlaceFormProps {
   onCreatePlace: (place: Place) => void;
@@ -41,7 +36,10 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
     const trimmedTitle = enteredTitle.trim();
 
     if (!trimmedTitle || !selectedImage || !pickedLocation) {
-      Alert.alert("Invalid form", "Please add title, image, and location.");
+      showAlert(
+        ALERT_MESSAGES.invalidFormTitle,
+        ALERT_MESSAGES.invalidFormMessage,
+      );
       return;
     }
 

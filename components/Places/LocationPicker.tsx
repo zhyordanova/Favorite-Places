@@ -3,21 +3,22 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Platform,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { Radius } from "@/constants/layout";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
 import { usePickedLocation } from "@/store/picked-location-context";
 import { Location } from "@/types";
+import { showAlert } from "@/util/alerts";
 import { getAddress, getMapPreview } from "@/util/location";
 
 interface LocationPickerProps {
@@ -37,6 +38,23 @@ export default function LocationPicker({
   pickedLocation,
 }: LocationPickerProps) {
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+
+  function stopFetchingWithAlert(title: string, message: string): void {
+    showAlert(title, message);
+    setIsFetchingLocation(false);
+  }
+
+  function showGeocodingAlert(error: unknown, fallbackMessage: string): void {
+    if (isMapboxConfigError(error)) {
+      showAlert(
+        ALERT_MESSAGES.configErrorTitle,
+        ALERT_MESSAGES.configErrorMessage,
+      );
+      return;
+    }
+
+    showAlert(ALERT_MESSAGES.geocodingFailedTitle, fallbackMessage);
+  }
 
   const [locationPermissionInformation, requestPermission] =
     LocationModule.useForegroundPermissions();
@@ -66,17 +84,10 @@ export default function LocationPicker({
           );
           onPickLocation({ ...pickedMapLocation, address });
         } catch (error) {
-          if (isMapboxConfigError(error)) {
-            Alert.alert(
-              "Configuration Error",
-              "Location services are not configured correctly. Please try again later.",
-            );
-          } else {
-            Alert.alert(
-              "Geocoding Failed",
-              "Could not retrieve the address for the selected location.",
-            );
-          }
+          showGeocodingAlert(
+            error,
+            "Could not retrieve the address for the selected location.",
+          );
         } finally {
           clearPickedMapLocation();
           setIsFetchingLocation(false);
@@ -107,11 +118,10 @@ export default function LocationPicker({
           await LocationModule.hasServicesEnabledAsync();
 
         if (!hasServicesEnabled) {
-          Alert.alert(
-            "Location Services Disabled",
-            "Please enable location services on your device to use this feature.",
+          stopFetchingWithAlert(
+            ALERT_MESSAGES.locationServicesDisabledTitle,
+            ALERT_MESSAGES.locationServicesDisabledMessage,
           );
-          setIsFetchingLocation(false);
           return;
         }
       }
@@ -122,11 +132,10 @@ export default function LocationPicker({
           accuracy: LocationModule.Accuracy.High,
         });
       } catch {
-        Alert.alert(
-          "Location Unavailable",
-          "Could not fetch your location. Make sure location services are enabled on your device.",
+        stopFetchingWithAlert(
+          ALERT_MESSAGES.locationUnavailableTitle,
+          ALERT_MESSAGES.locationUnavailableMessage,
         );
-        setIsFetchingLocation(false);
         return;
       }
 
@@ -139,17 +148,10 @@ export default function LocationPicker({
       try {
         address = await getAddress(currentLocation.lat, currentLocation.lng);
       } catch (error) {
-        if (isMapboxConfigError(error)) {
-          Alert.alert(
-            "Configuration Error",
-            "Location services are not configured correctly. Please try again later.",
-          );
-        } else {
-          Alert.alert(
-            "Geocoding Failed",
-            "Could not retrieve the address for your location.",
-          );
-        }
+        showGeocodingAlert(
+          error,
+          "Could not retrieve the address for your location.",
+        );
         setIsFetchingLocation(false);
         return;
       }
@@ -157,11 +159,10 @@ export default function LocationPicker({
       onPickLocation({ ...currentLocation, address });
       setIsFetchingLocation(false);
     } catch {
-      Alert.alert(
-        "Unexpected Error",
-        "An unexpected error occurred while getting your location.",
+      stopFetchingWithAlert(
+        ALERT_MESSAGES.unexpectedErrorTitle,
+        ALERT_MESSAGES.unexpectedErrorMessage,
       );
-      setIsFetchingLocation(false);
     }
   }
 

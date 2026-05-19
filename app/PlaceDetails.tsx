@@ -1,10 +1,12 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
+import { showErrorAlert } from "@/util/alerts";
 import { fetchPlaceDetails } from "@/util/database";
 
 export default function PlaceDetails() {
@@ -30,7 +32,7 @@ export default function PlaceDetails() {
         const place = await fetchPlaceDetails(placeId);
         setFetchedPlace(place);
       } catch {
-        Alert.alert("Error", "Could not load place details. Please try again.");
+        showErrorAlert(ALERT_MESSAGES.loadPlaceDetailsFailed);
       }
     }
 
