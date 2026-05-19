@@ -25,6 +25,13 @@ interface LocationPickerProps {
   pickedLocation: Location | undefined;
 }
 
+function isMapboxConfigError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    error.message.includes("EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN")
+  );
+}
+
 export default function LocationPicker({
   onPickLocation,
   pickedLocation,
@@ -58,11 +65,18 @@ export default function LocationPicker({
             pickedMapLocation.lng,
           );
           onPickLocation({ ...pickedMapLocation, address });
-        } catch {
-          Alert.alert(
-            "Geocoding Failed",
-            "Could not retrieve the address for the selected location.",
-          );
+        } catch (error) {
+          if (isMapboxConfigError(error)) {
+            Alert.alert(
+              "Configuration Error",
+              "Location services are not configured correctly. Please try again later.",
+            );
+          } else {
+            Alert.alert(
+              "Geocoding Failed",
+              "Could not retrieve the address for the selected location.",
+            );
+          }
         } finally {
           clearPickedMapLocation();
           setIsFetchingLocation(false);
@@ -124,11 +138,18 @@ export default function LocationPicker({
       let address: string;
       try {
         address = await getAddress(currentLocation.lat, currentLocation.lng);
-      } catch {
-        Alert.alert(
-          "Geocoding Failed",
-          "Could not retrieve the address for your location.",
-        );
+      } catch (error) {
+        if (isMapboxConfigError(error)) {
+          Alert.alert(
+            "Configuration Error",
+            "Location services are not configured correctly. Please try again later.",
+          );
+        } else {
+          Alert.alert(
+            "Geocoding Failed",
+            "Could not retrieve the address for your location.",
+          );
+        }
         setIsFetchingLocation(false);
         return;
       }
@@ -162,13 +183,17 @@ export default function LocationPicker({
   }
 
   if (pickedLocation && !isFetchingLocation) {
-    locationPreview = (
+    const mapPreviewUri = getMapPreview(pickedLocation.lat, pickedLocation.lng);
+
+    locationPreview = mapPreviewUri ? (
       <Image
         style={styles.mapImage}
         source={{
-          uri: getMapPreview(pickedLocation.lat, pickedLocation.lng),
+          uri: mapPreviewUri,
         }}
       />
+    ) : (
+      <Text style={sharedStyles.statusText}>Map preview unavailable.</Text>
     );
   }
 

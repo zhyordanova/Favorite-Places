@@ -1,5 +1,12 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 import ImagePicker from "@/components/Places/ImagePicker";
 import LocationPicker from "@/components/Places/LocationPicker";
@@ -31,7 +38,14 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   }, []);
 
   function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage!, pickedLocation!);
+    const trimmedTitle = enteredTitle.trim();
+
+    if (!trimmedTitle || !selectedImage || !pickedLocation) {
+      Alert.alert("Invalid form", "Please add title, image, and location.");
+      return;
+    }
+
+    const placeData = new Place(trimmedTitle, selectedImage, pickedLocation);
     onCreatePlace(placeData);
   }
 
