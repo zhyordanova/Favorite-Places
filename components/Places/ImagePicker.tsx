@@ -8,8 +8,8 @@ import * as MediaLibrary from "expo-media-library";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "@/components/UI/OutlinedButton";
-import { sharedStyles } from "@/constants/sharedStyles";
 import { PICKER_OPTIONS } from "@/constants/imagePicker";
+import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
 
 interface ImagePickerProps {
