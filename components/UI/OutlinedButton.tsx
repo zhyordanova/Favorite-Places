@@ -41,7 +41,7 @@ export default function OutlinedButton({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 6,
+    paddingVertical: Spacing.xsm,
     paddingHorizontal: Spacing.md,
     marginVertical: Spacing.md,
     marginHorizontal: Spacing.lg,

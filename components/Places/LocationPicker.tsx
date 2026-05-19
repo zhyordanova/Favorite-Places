@@ -52,24 +52,21 @@ export default function LocationPicker({
 
         setIsFetchingLocation(true);
 
-        let address: string;
         try {
-          address = await getAddress(
+          const address = await getAddress(
             pickedMapLocation.lat,
             pickedMapLocation.lng,
           );
+          onPickLocation({ ...pickedMapLocation, address });
         } catch {
           Alert.alert(
             "Geocoding Failed",
             "Could not retrieve the address for the selected location.",
           );
+        } finally {
+          clearPickedMapLocation();
           setIsFetchingLocation(false);
-          return;
         }
-
-        onPickLocation({ ...pickedMapLocation, address });
-        clearPickedMapLocation();
-        setIsFetchingLocation(false);
       }
 
       storePickedLocation();
@@ -87,10 +84,6 @@ export default function LocationPicker({
       const hasPermission = await verifiedPermissions();
 
       if (!hasPermission) {
-        Alert.alert(
-          "Permission Denied",
-          "Location permission is required to use this feature.",
-        );
         setIsFetchingLocation(false);
         return;
       }
