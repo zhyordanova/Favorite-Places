@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
-import Button from "../UI/Button";
-import ImagePicker from "./ImagePicker";
-import LocationPicker from "./LocationPicker";
-import { Colors } from "../../constants/colors";
-import { Place } from "../../models/place";
-import { Location } from "../../types";
+import ImagePicker from "@/components/Places/ImagePicker";
+import LocationPicker from "@/components/Places/LocationPicker";
+import Button from "@/components/UI/Button";
+import { Colors } from "@/constants/colors";
+import { Place } from "@/models/place";
+import { Location } from "@/types";
 
 interface PlaceFormProps {
   onCreatePlace: (place: Place) => void;
@@ -61,7 +61,6 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
       <Button onPress={savePlaceHandler} disabled={!isFormValid}>
         Add Place
       </Button>
-
     </ScrollView>
   );
 }

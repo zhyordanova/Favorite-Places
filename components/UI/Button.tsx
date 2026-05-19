@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from "react-native";
 
-import { Colors } from "../../constants/colors";
+import { Colors } from "@/constants/colors";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.4,
   },
-  
+
   buttonText: {
     textAlign: "center",
     fontSize: 16,

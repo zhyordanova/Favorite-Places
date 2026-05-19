@@ -1,7 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from "../../constants/colors";
-import { Place } from "../../models/place";
+import { Colors } from "@/constants/colors";
+import { Place } from "@/models/place";
 
 interface PlaceItemProps {
   place: Place;
@@ -14,14 +14,12 @@ export default function PlaceItem({ place, onSelect }: PlaceItemProps) {
       style={({ pressed }) => [styles.item, pressed && styles.pressed]}
       onPress={() => onSelect(place.id)}
     >
-
       <Image style={styles.image} source={{ uri: place.imageUri }} />
 
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{place.title}</Text>
         <Text style={styles.address}>{place.address}</Text>
       </View>
-
     </Pressable>
   );
 }
@@ -61,7 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: Colors.gray700,
   },
-  
+
   address: {
     fontSize: 12,
     color: Colors.gray700,

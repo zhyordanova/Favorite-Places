@@ -2,10 +2,10 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../components/UI/OutlinedButton";
+import OutlinedButton from "@/components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
+import { Place } from "@/models/place";
 import { fetchPlaceDetails } from "@/util/database";
-import { Place } from "../models/place";
 
 export default function PlaceDetails() {
   const router = useRouter();
