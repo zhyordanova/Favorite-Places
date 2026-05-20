@@ -56,8 +56,11 @@ export default function LocationPicker({
     showAlert(ALERT_MESSAGES.geocodingFailedTitle, fallbackMessage);
   }
 
-  const [locationPermissionInformation, requestPermission, getLocationPermission] =
-    LocationModule.useForegroundPermissions();
+  const [
+    locationPermissionInformation,
+    requestPermission,
+    getLocationPermission,
+  ] = LocationModule.useForegroundPermissions();
 
   const verifyLocationPermission = usePermission(
     locationPermissionInformation,
