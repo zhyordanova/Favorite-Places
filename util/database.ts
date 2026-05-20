@@ -14,7 +14,7 @@ export async function init(): Promise<void> {
     address TEXT NOT NULL,
     lat REAL NOT NULL,
     lng REAL NOT NULL,
-    createdAt INTEGER NOT NULL
+    createdAt INTEGER NOT NULL DEFAULT 0
   )`);
 
   const tableInfo = await database.getAllAsync<{ name: string }>(
