@@ -1,6 +1,6 @@
+import { PermissionStatus } from "expo-modules-core";
 import { useEffect, useRef } from "react";
 import { AppState, AppStateStatus } from "react-native";
-import { PermissionStatus } from "expo-modules-core";
 
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { showAlert, showSettingsAlert } from "@/util/alerts";
