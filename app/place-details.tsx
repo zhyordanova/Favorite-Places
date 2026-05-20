@@ -2,8 +2,8 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import LoadingOverlay from "@/components/UI/LoadingOverlay";
-import OutlinedButton from "@/components/UI/OutlinedButton";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
+import OutlinedButton from "@/components/ui/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
@@ -16,7 +16,7 @@ export default function PlaceDetails() {
 
   function showOnMapHandler() {
     router.push({
-      pathname: "/Map",
+      pathname: "/map",
       params: {
         lat: fetchedPlace?.location.lat.toString(),
         lng: fetchedPlace?.location.lng.toString(),

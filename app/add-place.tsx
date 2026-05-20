@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 
-import PlaceForm from "@/components/Places/PlaceForm";
+import PlaceForm from "@/components/places/PlaceForm";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
 import { showErrorAlert } from "@/util/alerts";

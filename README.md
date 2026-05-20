@@ -1,100 +1,277 @@
-# FavouritePlaces
+# Favourite Places
 
-A React Native app for saving your favourite locations with photos, addresses, and map coordinates.
+## 🎯 Project Overview
 
-## Features
+**Favourite Places** is a React Native mobile app that lets you save your favorite locations with photos, addresses, and GPS coordinates. Pick places on a map, capture photos with your camera, and build your personal location library with an intuitive offline-first database.
 
-- Add places with a title, photo, and location
-- Take photos with the camera or pick from gallery (saved to a "FavouritePlaces" album)
-- Pick location from map or use current GPS location
-- Two map modes: pick mode (select and save location) and view mode (display saved location)
-- Reverse geocoding via Mapbox API
-- Persistent storage with SQLite
-- View place details and see location on map
-- Custom photo marker on the map — the place's photo is rendered as a styled pin (circle + pointer)
-- Fallback marker support — if custom marker capture fails, a standard map pin is shown
+The app demonstrates production-quality React Native architecture with TypeScript, SQLite, custom map markers, and seamless cross-platform support (iOS, Android, Web).
 
-## Tech Stack
+---
 
-- [Expo SDK 54](https://expo.dev) with file-based routing (expo-router)
-- TypeScript
-- expo-sqlite — local database
-- expo-location — GPS
-- expo-image-picker & expo-media-library — camera and gallery
-- react-native-maps — interactive map
-- react-native-view-shot — capturing custom marker view as image
-- Mapbox API — map preview and reverse geocoding
+## 📸 Features
 
-## Project Structure
+- 📸 **Camera & Gallery** — Capture new photos or pick from your library
+- 🗺️ **Interactive Maps** — Pick locations by tapping the map or use your current GPS position
+- 📍 **Auto Address** — Reverse geocoding displays street addresses automatically
+- 💾 **Offline Storage** — All places saved locally in SQLite, works without internet
+- 🎯 **Custom Markers** — Your place photos appear as styled pins on the map
+- ⚡ **Smooth UX** — Optimized map loading with no visual flash on Android/iOS
+- 📱 **Cross-Platform** — Native support for iOS, Android, and Web
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology | Why |
+|----------|-----------|-----|
+| **Framework** | Expo SDK 54 | Unified iOS/Android development, fast iteration |
+| **Routing** | expo-router | Modern file-based routing system |
+| **Language** | TypeScript 5.9 | Type safety, better developer experience |
+| **Database** | expo-sqlite | Lightweight local persistence, no server needed |
+| **Maps** | react-native-maps | Battle-tested, highly customizable |
+| **Location** | expo-location | GPS access with permission handling |
+| **Media** | expo-image-picker<br/>expo-media-library | Native camera & gallery integration |
+| **Geocoding** | Mapbox API | Address lookup and static map previews |
+| **Code Quality** | ESLint, Prettier | Consistent style and quality standards |
+
+---
+
+## 💡 What This Project Demonstrates
+
+### ✅ Architecture & Design
+
+- **Clean Separation**: UI components, business logic, data layer clearly separated
+- **Database First**: SQL `ORDER BY` used instead of in-memory sorting (scalable approach)
+- **Type Safety**: Full TypeScript with no `any` types
+- **State Management**: React Context for lightweight, scoped state (map location)
+- **Error Handling**: Graceful degradation (fallback markers if custom capture fails)
+
+### ✅ React Native Best Practices
+
+- Custom hooks (`useMarkerImage`, `usePermission`, `useColorScheme`)
+- FlatList optimization for lists
+- Platform-specific code (web vs. native)
+- Permission requests with clear UX
+- Loading states and error boundaries
+
+### ✅ Database Design
+
+- Schema with migrations for non-breaking updates
+- UUID v4 for unique IDs (cryptographically strong)
+- Timestamp-based ordering (reliable across sync)
+- Parameterized queries to prevent SQL injection
+
+### ✅ Performance Optimization
+
+- Positioned custom markers off-screen to prevent render flash
+- Memoized Context value to avoid unnecessary re-renders
+- SQLite B-tree indexing for fast lookups
+- Vector icons instead of bundled images
+
+---
+
+## 📂 Project Structure
 
 ```
-app/          # Screens (file-based routes)
-components/   # Reusable UI components
-  Places/     # Place list and form components
-  UI/         # Shared UI (buttons, MarkerGenerator, etc.)
-hooks/        # Custom hooks (useMarkerImage)
-models/       # Place class
-store/        # In-memory state (picked location)
-types/        # Shared TypeScript interfaces
-util/         # Database and API utilities
+favourite-places/
+├── app/                          # Screens (Expo Router)
+│   ├── _layout.tsx              # Root layout, DB init, providers
+│   ├── index.tsx                # Home (places list)
+│   ├── add-place.tsx            # Add new place flow
+│   ├── map.tsx                  # Map (pick/view mode)
+│   └── place-details.tsx        # Place detail view
+│
+├── components/
+│   ├── places/                  # Domain components
+│   │   ├── PlaceForm.tsx
+│   │   ├── PlacesList.tsx       # DB-ordered list (no UI sort)
+│   │   ├── LocationPicker.tsx
+│   │   ├── ImagePicker.tsx
+│   │   └── PlaceItem.tsx
+│   └── ui/                      # Reusable UI primitives
+│       ├── Button.tsx
+│       ├── IconButton.tsx
+│       ├── LoadingOverlay.tsx
+│       ├── OutlinedButton.tsx
+│       └── MarkerGenerator.tsx
+│
+├── hooks/                        # Custom React hooks
+│   ├── useMarkerImage.ts
+│   ├── usePermission.ts
+│   ├── useColorScheme.ts
+│   └── useThemeColor.ts
+│
+├── models/                       # Domain models
+│   └── place.ts                 # Place class with UUID generation
+│
+├── store/                        # Global state
+│   └── picked-location-context.tsx  # Map state provider
+│
+├── types/                        # TypeScript interfaces
+│   └── index.ts
+│
+├── util/                         # Utilities & APIs
+│   ├── database.ts              # SQLite CRUD + migrations
+│   ├── location.ts              # Mapbox integration
+│   └── alerts.ts                # Alert helpers
+│
+├── constants/                    # App constants
+│   ├── colors.ts
+│   ├── layout.ts
+│   ├── messages.ts
+│   └── sharedStyles.ts
+│
+└── scripts/
+    └── reset-project.js
 ```
 
-## Connectivity
+---
 
-- Offline-first: places are stored locally in SQLite
-- Internet is required for Mapbox reverse geocoding and static map preview
+## 🚀 Getting Started
 
-## Demo Flow
+### Prerequisites
 
-> Replace only the image paths below (e.g. `assets/screenshots/01-home.png`) with your real files.
+```bash
+Node.js 18+
+npm or yarn
+Expo CLI: npm install -g expo-cli
+iOS Simulator or Android Emulator (or physical device)
+```
 
-1. Open the app and mention startup DB initialization (SplashScreen waits for SQLite init)
+### Installation
 
-   ![Home screen](assets/screenshots/01-home-empty.png)
+```bash
+# Clone and install
+git clone <repo-url>
+cd FavouritePlaces
+npm install
 
-2. Tap Add and show the place form (title + image + location)
+# Set up environment
+cp .env.example .env
+# Add your Mapbox token to .env
 
-   ![Add place form](assets/screenshots/02-add-place-form.png)
+# Start
+npm run start
+npm run android    # Android Emulator
+npm run ios        # iOS Simulator
+npm run web        # Web browser
+```
 
-3. Use camera or gallery and mention runtime permissions
+### Development Commands
 
-   ![Camera or gallery](assets/screenshots/03-camera-or-gallery.png)
+```bash
+npm run start           # Start Expo dev server
+npm run android         # Run on Android Emulator
+npm run ios             # Run on iOS Simulator
+npm run web             # Run in browser
+npm run lint            # Check code quality
+npm run format          # Auto-format code
+npm run reset-project   # Clear data and rebuild
+```
 
-4. Use Locate User or Pick on Map and mention reverse geocoding via Mapbox
+---
 
-   ![Location picked](assets/screenshots/04-location-picked.png)
+## 🔑 Environment Variables
 
-5. Save and return to home list (automatic refresh on screen focus)
+Create a `.env` file in the project root:
 
-   ![Updated places list](assets/screenshots/05-updated-places-list.png)
+```env
+MAPBOX_ACCESS_TOKEN=your_mapbox_access_token_here
+```
 
-6. Open Place Details and then View on Map
+An `.env.example` file is included in the repository as a template.
 
-   ![Place details](assets/screenshots/06-place-details.png)
+Get your token from [Mapbox](https://mapbox.com).
 
-7. Highlight custom photo marker generation on the map
+---
 
-   ![Custom photo marker](assets/screenshots/07-map-custom-marker.png)
+## 📋 Permissions Required
 
-8. Highlight fallback behavior (standard pin if custom capture fails)
+The app requests these native permissions:
 
-   ![Fallback marker](assets/screenshots/08-map-fallback-marker.png)
+- **Camera** — To capture new photos
+- **Photo Library** — To select existing photos
+- **Location** — To get current GPS position or display on map
 
-## Getting Started
+All permissions are requested with clear explanations and are optional (app works without them).
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🎓 Challenges & Lessons Learned
 
-2. Create a `.env` file based on `.env.example` and add your Mapbox token
+### 1. **Image Flash Before Map Loads (Android)**
 
-   ```bash
-   cp .env.example .env
-   ```
+**Problem:** Custom marker image was rendering before map was ready, causing visual flash.
 
-3. Start the app
-   ```bash
-   npx expo start
-   ```
+**Solution:** 
+- Positioned `MarkerGenerator` far off-screen with `opacity: 0`
+- Wrapped map in loading overlay until `onMapReady` fires
+- Result: Smooth, flicker-free map transitions
+
+**Lesson:** Platform-specific issues require testing on both Android and iOS.
+
+### 2. **ID Generation & Ordering**
+
+**Problem:** Used `Date.toString() + Math.random()` for IDs, then reversed list in UI to show newest first.
+
+**Solution:**
+- Replaced with UUID v4 (cryptographically strong, RFC 4122 compliant)
+- Added `createdAt` timestamp to database schema
+- Moved ordering to SQL layer: `ORDER BY createdAt DESC`
+- Removed in-memory `.reverse()` call
+
+**Lesson:** ID generation and ordering belong at the database layer, not the UI.
+
+### 3. **State Management Complexity**
+
+**Problem:** Needed to pass selected location across multiple screens (Map → form).
+
+**Solution:** React Context API for lightweight, scoped state without adding Redux/Zustand.
+
+**Lesson:** Start simple; add complexity only when needed. Context is sufficient for transient, cross-screen state.
+
+### 4. **TypeScript + React Native**
+
+**Lesson:** Full TypeScript typing (no `any`) catches bugs early and makes refactoring safer.
+
+---
+
+## 🔮 Future Improvements
+
+- 📤 **Cloud Sync** — Firebase/Supabase integration for multi-device backup
+- 🔐 **Authentication** — User accounts for synced places across devices
+- 🏷️ **Collections** — Organize places into favorites, visited, wishlist
+- 🔍 **Search** — Full-text search on place names and addresses
+- 🗺️ **Export** — Save places as JSON or GeoJSON
+- 🌙 **Dark Mode** — Theme switching
+- 📊 **Analytics** — Track most-visited places, heatmap view
+- ✏️ **Edit/Delete** — Update or remove saved places
+- 🔔 **Reminders** — Geofence notifications when near a saved place
+
+---
+
+## 📚 Key Learnings
+
+This project is a great portfolio piece for demonstrating:
+
+- ✅ Full-stack React Native development (UI + database + APIs)
+- ✅ TypeScript proficiency with no type-casting
+- ✅ Mobile UX best practices (smooth loading, permission handling)
+- ✅ Database design (schema, migrations, indexing)
+- ✅ Cross-platform thinking (iOS/Android/Web)
+- ✅ Component architecture and code organization
+- ✅ Performance optimization techniques
+
+---
+
+## 👤 Author
+
+Created as a practical portfolio project demonstrating production-grade React Native architecture and best practices.
+
+For questions or feature ideas, feel free to open an issue or reach out.
+
+---
+
+## 📝 License
+
+Private / Portfolio Use

@@ -2,8 +2,8 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import PlacesList from "@/components/Places/PlacesList";
-import LoadingOverlay from "@/components/UI/LoadingOverlay";
+import PlacesList from "@/components/places/PlacesList";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { Colors } from "@/constants/colors";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";

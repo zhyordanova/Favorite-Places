@@ -4,8 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import IconButton from "@/components/UI/IconButton";
-import LoadingOverlay from "@/components/UI/LoadingOverlay";
+import IconButton from "@/components/ui/IconButton";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { Colors } from "@/constants/colors";
 import { PickedLocationProvider } from "@/store/picked-location-context";
 import { init } from "@/util/database";
@@ -65,19 +65,19 @@ export default function RootLayout() {
                   icon="add"
                   size={24}
                   color={tintColor}
-                  onPress={() => router.navigate("/AddPlace")}
+                  onPress={() => router.navigate("/add-place")}
                 />
               ),
             }}
           />
 
           <Stack.Screen
-            name="AddPlace"
+            name="add-place"
             options={{ title: "Add a new place" }}
           />
-          <Stack.Screen name="Map" options={{ title: "Map" }} />
+          <Stack.Screen name="map" options={{ title: "Map" }} />
           <Stack.Screen
-            name="PlaceDetails"
+            name="place-details"
             options={{ title: "Loading Place" }}
           />
         </Stack>

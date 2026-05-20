@@ -5,6 +5,7 @@ node_modules/
 
 # Expo
 .expo/
+.expo-shared/
 dist/
 web-build/
 expo-env.d.ts
@@ -33,6 +34,7 @@ yarn-error.*
 # local env files
 .env
 .env*.local
+!.env.example
 
 # typescript
 *.tsbuildinfo
@@ -43,5 +45,6 @@ app-example
 /ios
 /android
 
-# vscode
+# IDEs
 .vscode/
+.idea/

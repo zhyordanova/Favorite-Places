@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import MapView, { MapPressEvent, Marker } from "react-native-maps";
 
-import IconButton from "@/components/UI/IconButton";
-import LoadingOverlay from "@/components/UI/LoadingOverlay";
-import MarkerGenerator from "@/components/UI/MarkerGenerator";
+import IconButton from "@/components/ui/IconButton";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
+import MarkerGenerator from "@/components/ui/MarkerGenerator";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { useMarkerImage } from "@/hooks/useMarkerImage";
 import { usePickedLocation } from "@/store/picked-location-context";

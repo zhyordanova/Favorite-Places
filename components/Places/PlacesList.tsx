@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
-import PlaceItem from "@/components/Places/PlaceItem";
+import PlaceItem from "@/components/places/PlaceItem";
 import { Spacing } from "@/constants/layout";
 import { Place } from "@/models/place";
 
@@ -13,7 +13,7 @@ export default function PlacesList({ places }: PlacesListProps) {
   const router = useRouter();
 
   function selectPlaceHandler(id: string) {
-    router.push({ pathname: "/PlaceDetails", params: { placeId: id } });
+    router.push({ pathname: "/place-details", params: { placeId: id } });
   }
 
   if (!places || places.length === 0) {

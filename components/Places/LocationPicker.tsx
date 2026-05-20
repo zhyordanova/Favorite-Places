@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-import OutlinedButton from "@/components/UI/OutlinedButton";
+import OutlinedButton from "@/components/ui/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { Radius } from "@/constants/layout";
 import { ALERT_MESSAGES } from "@/constants/messages";
@@ -167,7 +167,7 @@ export default function LocationPicker({
   }
 
   function pickOnMapHandler(): void {
-    router.navigate("/Map");
+    router.navigate("/map");
   }
 
   let locationPreview = (
