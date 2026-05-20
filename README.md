@@ -22,17 +22,17 @@ The app demonstrates production-quality React Native architecture with TypeScrip
 
 ## 🛠️ Tech Stack
 
-| Category | Technology | Why |
-|----------|-----------|-----|
-| **Framework** | Expo SDK 54 | Unified iOS/Android development, fast iteration |
-| **Routing** | expo-router | Modern file-based routing system |
-| **Language** | TypeScript 5.9 | Type safety, better developer experience |
-| **Database** | expo-sqlite | Lightweight local persistence, no server needed |
-| **Maps** | react-native-maps | Battle-tested, highly customizable |
-| **Location** | expo-location | GPS access with permission handling |
-| **Media** | expo-image-picker<br/>expo-media-library | Native camera & gallery integration |
-| **Geocoding** | Mapbox API | Address lookup and static map previews |
-| **Code Quality** | ESLint, Prettier | Consistent style and quality standards |
+| Category         | Technology                               | Why                                             |
+| ---------------- | ---------------------------------------- | ----------------------------------------------- |
+| **Framework**    | Expo SDK 54                              | Unified iOS/Android development, fast iteration |
+| **Routing**      | expo-router                              | Modern file-based routing system                |
+| **Language**     | TypeScript 5.9                           | Type safety, better developer experience        |
+| **Database**     | expo-sqlite                              | Lightweight local persistence, no server needed |
+| **Maps**         | react-native-maps                        | Battle-tested, highly customizable              |
+| **Location**     | expo-location                            | GPS access with permission handling             |
+| **Media**        | expo-image-picker<br/>expo-media-library | Native camera & gallery integration             |
+| **Geocoding**    | Mapbox API                               | Address lookup and static map previews          |
+| **Code Quality** | ESLint, Prettier                         | Consistent style and quality standards          |
 
 ---
 
@@ -203,7 +203,8 @@ All permissions are requested with clear explanations and are optional (app work
 
 **Problem:** Custom marker image was rendering before map was ready, causing visual flash.
 
-**Solution:** 
+**Solution:**
+
 - Positioned `MarkerGenerator` far off-screen with `opacity: 0`
 - Wrapped map in loading overlay until `onMapReady` fires
 - Result: Smooth, flicker-free map transitions
@@ -215,6 +216,7 @@ All permissions are requested with clear explanations and are optional (app work
 **Problem:** Used `Date.toString() + Math.random()` for IDs, then reversed list in UI to show newest first.
 
 **Solution:**
+
 - Replaced with UUID v4 (cryptographically strong, RFC 4122 compliant)
 - Added `createdAt` timestamp to database schema
 - Moved ordering to SQL layer: `ORDER BY createdAt DESC`
