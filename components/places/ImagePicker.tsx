@@ -21,20 +21,22 @@ export default function ImagePicker({
   onTakeImage,
   selectedImage,
 }: ImagePickerProps) {
-  const [cameraPermissionInformation, requestCameraPermission] =
+  const [cameraPermissionInformation, requestCameraPermission, getCameraPermission] =
     useCameraPermissions();
-  const [libraryPermissionInformation, requestLibraryPermission] =
+  const [libraryPermissionInformation, requestLibraryPermission, getLibraryPermission] =
     useMediaLibraryPermissions();
 
   const verifyCameraPermission = usePermission(
     cameraPermissionInformation,
     requestCameraPermission,
+    getCameraPermission,
     "You need to grant camera permissions to use this app.",
   );
 
   const verifyLibraryPermission = usePermission(
     libraryPermissionInformation,
     requestLibraryPermission,
+    getLibraryPermission,
     "You need to grant media library permissions to use this app.",
   );
 

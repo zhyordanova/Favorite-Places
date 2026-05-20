@@ -128,7 +128,6 @@ export default function Map() {
                   latitude: selectedLocation.lat,
                   longitude: selectedLocation.lng,
                 }}
-                title={!placeId ? "Picked Location" : undefined}
                 image={markerImage ? { uri: markerImage } : undefined}
               />
             )}

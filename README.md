@@ -1,4 +1,4 @@
-# Favourite Places
+# Favourite Places Expo
 
 ## 🎯 Project Overview
 

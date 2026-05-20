@@ -20,4 +20,8 @@ export const ALERT_MESSAGES = {
   unexpectedErrorTitle: "Unexpected Error",
   unexpectedErrorMessage:
     "An unexpected error occurred while getting your location.",
+  dbInitFailed: "Database initialization failed.",
+  openSettings: "Open Settings",
+  permissionsDeniedPermanently:
+    " To enable it, go to your device settings and allow access for this app.",
 } as const;
