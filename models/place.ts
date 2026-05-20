@@ -1,4 +1,14 @@
+import { randomUUID as expoRandomUUID } from "expo-crypto";
+
 import { Location } from "@/types";
+
+function generatePlaceId(): string {
+  if (typeof globalThis.crypto?.randomUUID === "function") {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return expoRandomUUID();
+}
 
 export class Place {
   id: string;
@@ -13,7 +23,7 @@ export class Place {
     location: Location,
     id?: string,
   ) {
-    this.id = id ?? new Date().toString() + Math.random().toString();
+    this.id = id ?? generatePlaceId();
     this.title = title;
     this.imageUri = imageUri;
     this.address = location.address;

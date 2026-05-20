@@ -1,8 +1,9 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import PlacesList from "@/components/Places/PlacesList";
+import LoadingOverlay from "@/components/UI/LoadingOverlay";
 import { Colors } from "@/constants/colors";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
@@ -35,11 +36,7 @@ export default function AllPlaces() {
   );
 
   if (isLoading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.primary500} />
-      </View>
-    );
+    return <LoadingOverlay />;
   }
 
   if (error) {

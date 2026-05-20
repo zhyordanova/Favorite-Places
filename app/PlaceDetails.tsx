@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import LoadingOverlay from "@/components/UI/LoadingOverlay";
 import OutlinedButton from "@/components/UI/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { ALERT_MESSAGES } from "@/constants/messages";
@@ -40,11 +41,7 @@ export default function PlaceDetails() {
   }, [placeId]);
 
   if (!fetchedPlace) {
-    return (
-      <View>
-        <Text>Loading place data...</Text>
-      </View>
-    );
+    return <LoadingOverlay message="Loading place data..." />;
   }
 
   return (

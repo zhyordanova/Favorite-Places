@@ -7,19 +7,19 @@ interface IconButtonProps {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   size: number;
   color: string | undefined;
-  onClick: () => void;
+  onPress: () => void;
 }
 
 export default function IconButton({
   icon,
   size,
   color,
-  onClick,
+  onPress,
 }: IconButtonProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-      onPress={onClick}
+      onPress={onPress}
     >
       <Ionicons name={icon} size={size} color={color} />
     </Pressable>

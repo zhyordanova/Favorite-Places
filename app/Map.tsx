@@ -1,9 +1,10 @@
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import MapView, { MapPressEvent, Marker } from "react-native-maps";
 
 import IconButton from "@/components/UI/IconButton";
+import LoadingOverlay from "@/components/UI/LoadingOverlay";
 import MarkerGenerator from "@/components/UI/MarkerGenerator";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { useMarkerImage } from "@/hooks/useMarkerImage";
@@ -23,6 +24,7 @@ export default function Map() {
   const initialLocation = lat && lng ? { lat: +lat, lng: +lng } : undefined;
 
   const [selectedLocation, setSelectedLocation] = useState(initialLocation);
+  const [isMapReady, setIsMapReady] = useState(false);
   const [imageUri, setImageUri] = useState<string | undefined>();
   const [markerCaptureFailed, setMarkerCaptureFailed] = useState(false);
 
@@ -95,7 +97,7 @@ export default function Map() {
                 icon="save"
                 size={24}
                 color={tintColor}
-                onClick={savePickedLocationHandler}
+                onPress={savePickedLocationHandler}
               />
             ) : null,
         }}
@@ -110,28 +112,45 @@ export default function Map() {
         />
       )}
 
-      <MapView
-        style={styles.map}
-        initialRegion={region}
-        onPress={selectLocationHandler}
-      >
-        {selectedLocation &&
-          (!placeId || markerImage || markerCaptureFailed) && (
-            <Marker
-              key={markerImage ?? "default"}
-              coordinate={{
-                latitude: selectedLocation.lat,
-                longitude: selectedLocation.lng,
-              }}
-              title={!placeId ? "Picked Location" : undefined}
-              image={markerImage ? { uri: markerImage } : undefined}
-            />
-          )}
-      </MapView>
+      <View style={styles.container}>
+        <MapView
+          style={styles.map}
+          initialRegion={region}
+          onPress={selectLocationHandler}
+          loadingEnabled
+          onMapReady={() => setIsMapReady(true)}
+        >
+          {selectedLocation &&
+            (!placeId || markerImage || markerCaptureFailed) && (
+              <Marker
+                key={markerImage ?? "default"}
+                coordinate={{
+                  latitude: selectedLocation.lat,
+                  longitude: selectedLocation.lng,
+                }}
+                title={!placeId ? "Picked Location" : undefined}
+                image={markerImage ? { uri: markerImage } : undefined}
+              />
+            )}
+        </MapView>
+
+        {!isMapReady ? (
+          <View style={styles.loadingOverlay}>
+            <LoadingOverlay message="Loading map..." />
+          </View>
+        ) : null}
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
+
   map: { flex: 1 },
+
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#fff",
+  },
 });

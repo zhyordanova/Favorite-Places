@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import IconButton from "@/components/UI/IconButton";
+import LoadingOverlay from "@/components/UI/LoadingOverlay";
 import { Colors } from "@/constants/colors";
 import { PickedLocationProvider } from "@/store/picked-location-context";
 import { init } from "@/util/database";
@@ -48,7 +49,7 @@ export default function RootLayout() {
   }
 
   if (!dbInitialized) {
-    return null;
+    return <LoadingOverlay message="Preparing app..." />;
   }
 
   return (
@@ -64,7 +65,7 @@ export default function RootLayout() {
                   icon="add"
                   size={24}
                   color={tintColor}
-                  onClick={() => router.navigate("/AddPlace")}
+                  onPress={() => router.navigate("/AddPlace")}
                 />
               ),
             }}

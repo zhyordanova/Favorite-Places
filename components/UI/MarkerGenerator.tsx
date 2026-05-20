@@ -72,9 +72,10 @@ export default function MarkerGenerator({
 const styles = StyleSheet.create({
   hidden: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    zIndex: -1,
+    top: -10000,
+    left: -10000,
+    opacity: 0,
+    pointerEvents: "none",
   },
 
   wrapper: {
