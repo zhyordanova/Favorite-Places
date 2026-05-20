@@ -15,11 +15,13 @@ export default function PlaceDetails() {
   const [fetchedPlace, setFetchedPlace] = useState<Place | undefined>();
 
   function showOnMapHandler() {
+    if (!fetchedPlace) return;
+
     router.push({
       pathname: "/map",
       params: {
-        lat: fetchedPlace?.location.lat.toString(),
-        lng: fetchedPlace?.location.lng.toString(),
+        lat: fetchedPlace.location.lat.toString(),
+        lng: fetchedPlace.location.lng.toString(),
         placeId,
       },
     });
@@ -48,7 +50,7 @@ export default function PlaceDetails() {
     <>
       <Stack.Screen options={{ title: fetchedPlace.title }} />
       <ScrollView>
-        <Image style={styles.image} source={{ uri: fetchedPlace?.imageUri }} />
+        <Image style={styles.image} source={{ uri: fetchedPlace.imageUri }} />
 
         <View style={styles.locationContainer}>
           <View style={styles.addressContainer}>

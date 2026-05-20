@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from "react-native";
 import IconButton from "@/components/ui/IconButton";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { Colors } from "@/constants/colors";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { PickedLocationProvider } from "@/store/picked-location-context";
 import { init } from "@/util/database";
 
@@ -30,9 +31,8 @@ export default function RootLayout() {
       .then(() => {
         setDbInitialized(true);
       })
-      .catch((error) => {
-        console.log("Initializing db failed.");
-        console.log(error);
+      .catch((error: unknown) => {
+        console.error(ALERT_MESSAGES.dbInitFailed, error);
         setDbError(true);
       })
       .finally(() => {
