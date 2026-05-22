@@ -20,6 +20,13 @@ export const ALERT_MESSAGES = {
   unexpectedErrorTitle: "Unexpected Error",
   unexpectedErrorMessage:
     "An unexpected error occurred while getting your location.",
+  cameraUnavailableMessage:
+    "Camera is not available on this device/simulator. Please use gallery instead.",
+  imagePickerFailedMessage:
+    "Could not open camera or image library. Please try again.",
+  permissionRefreshFailedMessage:
+    "Could not refresh permission status. Please try again.",
+  openSettingsFailedMessage: "Unable to open device settings.",
   dbInitFailed: "Database initialization failed.",
   openSettings: "Open Settings",
   permissionsDeniedPermanently:

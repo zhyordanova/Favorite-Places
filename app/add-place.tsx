@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import PlaceForm from "@/components/places/PlaceForm";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
-import { showErrorAlert } from "@/util/alerts";
+import { handleAppError } from "@/util/alerts";
 import { insertPlace } from "@/util/database";
 
 export default function AddPlace() {
@@ -13,8 +13,8 @@ export default function AddPlace() {
     try {
       await insertPlace(place);
       router.back();
-    } catch {
-      showErrorAlert(ALERT_MESSAGES.savePlaceFailed);
+    } catch (error) {
+      handleAppError("save place", error, ALERT_MESSAGES.savePlaceFailed);
     }
   }
 

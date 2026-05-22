@@ -9,12 +9,25 @@ import { Image, StyleSheet, Text, View } from "react-native";
 
 import OutlinedButton from "@/components/ui/OutlinedButton";
 import { PICKER_OPTIONS } from "@/constants/imagePicker";
+import { ALERT_MESSAGES } from "@/constants/messages";
 import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
+import {
+  handleAppError,
+  logAppError,
+  showErrorAlert,
+} from "@/util/alerts";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
   selectedImage: string | undefined;
+}
+
+function isCameraUnavailableError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /camera not available on simulator/i.test(error.message)
+  );
 }
 
 export default function ImagePicker({
@@ -61,6 +74,12 @@ export default function ImagePicker({
   }
 
   async function saveToAlbum(uri: string): Promise<void> {
+    const hasPermission = await verifyLibraryPermission();
+
+    if (!hasPermission) {
+      return;
+    }
+
     try {
       const asset = await MediaLibrary.createAssetAsync(uri);
       const album = await MediaLibrary.getAlbumAsync("FavouritePlaces");
@@ -69,8 +88,9 @@ export default function ImagePicker({
       } else {
         await MediaLibrary.createAlbumAsync("FavouritePlaces", asset, false);
       }
-    } catch {
-      // Saving to album not supported in this environment (e.g. Expo Go)
+    } catch (error) {
+      logAppError("save image to album", error);
+      // Saving to album can be unsupported in some environments.
     }
   }
 
@@ -81,8 +101,20 @@ export default function ImagePicker({
       return;
     }
 
-    const image = await launchCameraAsync(PICKER_OPTIONS);
-    await processImageResult(image, true);
+    try {
+      const image = await launchCameraAsync(PICKER_OPTIONS);
+      await processImageResult(image, true);
+    } catch (error) {
+      if (isCameraUnavailableError(error)) {
+        showErrorAlert(ALERT_MESSAGES.cameraUnavailableMessage);
+      } else {
+        handleAppError(
+          "launch camera",
+          error,
+          ALERT_MESSAGES.imagePickerFailedMessage,
+        );
+      }
+    }
   }
 
   async function pickImageHandler(): Promise<void> {
@@ -92,11 +124,19 @@ export default function ImagePicker({
       return;
     }
 
-    const image = await launchImageLibraryAsync({
-      ...PICKER_OPTIONS,
-      mediaTypes: ["images"],
-    });
-    await processImageResult(image, false);
+    try {
+      const image = await launchImageLibraryAsync({
+        ...PICKER_OPTIONS,
+        mediaTypes: ["images"],
+      });
+      await processImageResult(image, false);
+    } catch (error) {
+      handleAppError(
+        "launch image library",
+        error,
+        ALERT_MESSAGES.imagePickerFailedMessage,
+      );
+    }
   }
 
   let imagePreview = (

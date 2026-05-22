@@ -7,7 +7,7 @@ import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { Colors } from "@/constants/colors";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
-import { showErrorAlert } from "@/util/alerts";
+import { handleAppError } from "@/util/alerts";
 import { fetchPlaces } from "@/util/database";
 
 export default function AllPlaces() {
@@ -23,9 +23,9 @@ export default function AllPlaces() {
         try {
           const places = await fetchPlaces();
           setLoadedPlaces(places);
-        } catch {
+        } catch (error) {
           setError(true);
-          showErrorAlert(ALERT_MESSAGES.loadPlacesFailed);
+          handleAppError("load places", error, ALERT_MESSAGES.loadPlacesFailed);
         } finally {
           setIsLoading(false);
         }
