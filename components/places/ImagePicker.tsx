@@ -12,11 +12,7 @@ import { PICKER_OPTIONS } from "@/constants/imagePicker";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
-import {
-  handleAppError,
-  logAppError,
-  showErrorAlert,
-} from "@/util/alerts";
+import { handleAppError, logAppError, showErrorAlert } from "@/util/alerts";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
