@@ -1,11 +1,14 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-import PlacesList from "../components/Places/PlacesList";
-import { Colors } from "../constants/colors";
-import { Place } from "../models/place";
-import { fetchPlaces } from "../util/database";
+import PlacesList from "@/components/places/PlacesList";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
+import { Colors } from "@/constants/colors";
+import { ALERT_MESSAGES } from "@/constants/messages";
+import { Place } from "@/models/place";
+import { handleAppError } from "@/util/alerts";
+import { fetchPlaces } from "@/util/database";
 
 export default function AllPlaces() {
   const [loadedPlaces, setLoadedPlaces] = useState<Place[]>([]);
@@ -20,12 +23,9 @@ export default function AllPlaces() {
         try {
           const places = await fetchPlaces();
           setLoadedPlaces(places);
-        } catch {
+        } catch (error) {
           setError(true);
-          Alert.alert(
-            "Error",
-            "Could not load places. Please restart the app.",
-          );
+          handleAppError("load places", error, ALERT_MESSAGES.loadPlacesFailed);
         } finally {
           setIsLoading(false);
         }
@@ -36,11 +36,7 @@ export default function AllPlaces() {
   );
 
   if (isLoading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.primary500} />
-      </View>
-    );
+    return <LoadingOverlay />;
   }
 
   if (error) {
@@ -60,6 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   errorText: {
     color: Colors.primary500,
     fontSize: 16,

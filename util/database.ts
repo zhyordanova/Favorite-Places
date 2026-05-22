@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
 
-import { Place } from "../models/place";
+import { Place } from "@/models/place";
 
 const databasePromise = SQLite.openDatabaseAsync("places.db");
 
@@ -13,14 +13,26 @@ export async function init(): Promise<void> {
     imageUri TEXT NOT NULL,
     address TEXT NOT NULL,
     lat REAL NOT NULL,
-    lng REAL NOT NULL
+    lng REAL NOT NULL,
+    createdAt INTEGER NOT NULL DEFAULT 0
   )`);
+
+  const tableInfo = await database.getAllAsync<{ name: string }>(
+    `PRAGMA table_info(places)`,
+  );
+  const hasCreatedAt = tableInfo.some((column) => column.name === "createdAt");
+
+  if (!hasCreatedAt) {
+    await database.execAsync(
+      `ALTER TABLE places ADD COLUMN createdAt INTEGER NOT NULL DEFAULT 0`,
+    );
+  }
 }
 
 export async function insertPlace(place: Place): Promise<void> {
   const database = await databasePromise;
   await database.runAsync(
-    `INSERT INTO places (id, title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO places (id, title, imageUri, address, lat, lng, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
       place.id,
       place.title,
@@ -28,6 +40,7 @@ export async function insertPlace(place: Place): Promise<void> {
       place.address,
       place.location.lat,
       place.location.lng,
+      Date.now(),
     ],
   );
 }
@@ -41,7 +54,9 @@ export async function fetchPlaces(): Promise<Place[]> {
     address: string;
     lat: number;
     lng: number;
-  }>(`SELECT * FROM places`);
+  }>(`SELECT id, title, imageUri, address, lat, lng
+      FROM places
+      ORDER BY createdAt DESC, rowid DESC`);
 
   return result.map(
     (row) =>

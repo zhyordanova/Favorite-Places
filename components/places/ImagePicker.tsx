@@ -7,31 +7,51 @@ import {
 import * as MediaLibrary from "expo-media-library";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../UI/OutlinedButton";
-import { Colors } from "../../constants/colors";
-import { PICKER_OPTIONS } from "../../constants/imagePicker";
-import { usePermission } from "../../hooks/use-permission";
+import OutlinedButton from "@/components/ui/OutlinedButton";
+import { PICKER_OPTIONS } from "@/constants/imagePicker";
+import { ALERT_MESSAGES } from "@/constants/messages";
+import { sharedStyles } from "@/constants/sharedStyles";
+import { usePermission } from "@/hooks/usePermission";
+import { handleAppError, logAppError, showErrorAlert } from "@/util/alerts";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
   selectedImage: string | undefined;
 }
 
-export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerProps) {
-  const [cameraPermissionInformation, requestCameraPermission] =
-    useCameraPermissions();
-  const [libraryPermissionInformation, requestLibraryPermission] =
-    useMediaLibraryPermissions();
+function isCameraUnavailableError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /camera not available on simulator/i.test(error.message)
+  );
+}
+
+export default function ImagePicker({
+  onTakeImage,
+  selectedImage,
+}: ImagePickerProps) {
+  const [
+    cameraPermissionInformation,
+    requestCameraPermission,
+    getCameraPermission,
+  ] = useCameraPermissions();
+  const [
+    libraryPermissionInformation,
+    requestLibraryPermission,
+    getLibraryPermission,
+  ] = useMediaLibraryPermissions();
 
   const verifyCameraPermission = usePermission(
     cameraPermissionInformation,
     requestCameraPermission,
+    getCameraPermission,
     "You need to grant camera permissions to use this app.",
   );
 
   const verifyLibraryPermission = usePermission(
     libraryPermissionInformation,
     requestLibraryPermission,
+    getLibraryPermission,
     "You need to grant media library permissions to use this app.",
   );
 
@@ -50,6 +70,12 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
   }
 
   async function saveToAlbum(uri: string): Promise<void> {
+    const hasPermission = await verifyLibraryPermission();
+
+    if (!hasPermission) {
+      return;
+    }
+
     try {
       const asset = await MediaLibrary.createAssetAsync(uri);
       const album = await MediaLibrary.getAlbumAsync("FavouritePlaces");
@@ -58,8 +84,9 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
       } else {
         await MediaLibrary.createAlbumAsync("FavouritePlaces", asset, false);
       }
-    } catch {
-      // Saving to album not supported in this environment (e.g. Expo Go)
+    } catch (error) {
+      logAppError("save image to album", error);
+      // Saving to album can be unsupported in some environments.
     }
   }
 
@@ -70,8 +97,20 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
       return;
     }
 
-    const image = await launchCameraAsync(PICKER_OPTIONS);
-    await processImageResult(image, true);
+    try {
+      const image = await launchCameraAsync(PICKER_OPTIONS);
+      await processImageResult(image, true);
+    } catch (error) {
+      if (isCameraUnavailableError(error)) {
+        showErrorAlert(ALERT_MESSAGES.cameraUnavailableMessage);
+      } else {
+        handleAppError(
+          "launch camera",
+          error,
+          ALERT_MESSAGES.imagePickerFailedMessage,
+        );
+      }
+    }
   }
 
   async function pickImageHandler(): Promise<void> {
@@ -81,14 +120,24 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
       return;
     }
 
-    const image = await launchImageLibraryAsync({
-      ...PICKER_OPTIONS,
-      mediaTypes: ["images"],
-    });
-    await processImageResult(image, false);
+    try {
+      const image = await launchImageLibraryAsync({
+        ...PICKER_OPTIONS,
+        mediaTypes: ["images"],
+      });
+      await processImageResult(image, false);
+    } catch (error) {
+      handleAppError(
+        "launch image library",
+        error,
+        ALERT_MESSAGES.imagePickerFailedMessage,
+      );
+    }
   }
 
-  let imagePreview = <Text>No image taken yet.</Text>;
+  let imagePreview = (
+    <Text style={sharedStyles.statusText}>No image taken yet.</Text>
+  );
 
   if (selectedImage) {
     imagePreview = (
@@ -98,11 +147,12 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
 
   return (
     <View>
-      <View style={styles.imagePreview}>{imagePreview}</View>
-      <View style={styles.actions}>
+      <View style={sharedStyles.pickerPreview}>{imagePreview}</View>
+      <View style={sharedStyles.pickerActions}>
         <OutlinedButton icon="camera" onPress={takeImageHandler}>
           Take Image
         </OutlinedButton>
+
         <OutlinedButton icon="image" onPress={pickImageHandler}>
           Pick from Gallery
         </OutlinedButton>
@@ -112,25 +162,8 @@ export default function ImagePicker({ onTakeImage, selectedImage }: ImagePickerP
 }
 
 const styles = StyleSheet.create({
-  imagePreview: {
-    height: 200,
-    marginVertical: 12,
-    marginHorizontal: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 4,
-    overflow: "hidden",
-    backgroundColor: Colors.primary100,
-    borderColor: Colors.primary500,
-    borderWidth: 2,
-  },
   image: {
     width: "100%",
     height: "100%",
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
   },
 });

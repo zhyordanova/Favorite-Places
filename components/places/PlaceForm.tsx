@@ -1,12 +1,15 @@
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
-import Button from "../UI/Button";
-import ImagePicker from "./ImagePicker";
-import LocationPicker from "./LocationPicker";
-import { Colors } from "../../constants/colors";
-import { Place } from "../../models/place";
-import { Location } from "../../types";
+import ImagePicker from "@/components/places/ImagePicker";
+import LocationPicker from "@/components/places/LocationPicker";
+import Button from "@/components/ui/Button";
+import { Colors } from "@/constants/colors";
+import { Spacing } from "@/constants/layout";
+import { ALERT_MESSAGES } from "@/constants/messages";
+import { Place } from "@/models/place";
+import { Location } from "@/types";
+import { showAlert } from "@/util/alerts";
 
 interface PlaceFormProps {
   onCreatePlace: (place: Place) => void;
@@ -30,7 +33,17 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
   }, []);
 
   function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage!, pickedLocation!);
+    const trimmedTitle = enteredTitle.trim();
+
+    if (!trimmedTitle || !selectedImage || !pickedLocation) {
+      showAlert(
+        ALERT_MESSAGES.invalidFormTitle,
+        ALERT_MESSAGES.invalidFormMessage,
+      );
+      return;
+    }
+
+    const placeData = new Place(trimmedTitle, selectedImage, pickedLocation);
     onCreatePlace(placeData);
   }
 
@@ -47,14 +60,17 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
           value={enteredTitle}
         />
       </View>
+
       <ImagePicker
         onTakeImage={takeImageHandler}
         selectedImage={selectedImage}
       />
+
       <LocationPicker
         onPickLocation={pickLocationHandler}
         pickedLocation={pickedLocation}
       />
+
       <Button onPress={savePlaceHandler} disabled={!isFormValid}>
         Add Place
       </Button>
@@ -65,17 +81,19 @@ export default function PlaceForm({ onCreatePlace }: PlaceFormProps) {
 const styles = StyleSheet.create({
   form: {
     flex: 1,
-    padding: 24,
+    padding: Spacing.lg,
   },
+
   label: {
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
     color: Colors.primary500,
   },
+
   input: {
-    marginTop: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 8,
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
+    paddingVertical: Spacing.sm,
     fontSize: 16,
     borderColor: Colors.primary500,
     borderWidth: 2,

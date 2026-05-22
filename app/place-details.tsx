@@ -1,22 +1,28 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import OutlinedButton from "../components/UI/OutlinedButton";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
+import OutlinedButton from "@/components/ui/OutlinedButton";
 import { Colors } from "@/constants/colors";
+import { ALERT_MESSAGES } from "@/constants/messages";
+import { Place } from "@/models/place";
+import { handleAppError } from "@/util/alerts";
 import { fetchPlaceDetails } from "@/util/database";
-import { Place } from "../models/place";
 
 export default function PlaceDetails() {
   const router = useRouter();
   const [fetchedPlace, setFetchedPlace] = useState<Place | undefined>();
 
   function showOnMapHandler() {
+    if (!fetchedPlace) return;
+
     router.push({
-      pathname: "/Map",
+      pathname: "/map",
       params: {
-        lat: fetchedPlace?.location.lat.toString(),
-        lng: fetchedPlace?.location.lng.toString(),
+        lat: fetchedPlace.location.lat.toString(),
+        lng: fetchedPlace.location.lng.toString(),
+        placeId,
       },
     });
   }
@@ -28,8 +34,12 @@ export default function PlaceDetails() {
       try {
         const place = await fetchPlaceDetails(placeId);
         setFetchedPlace(place);
-      } catch {
-        Alert.alert("Error", "Could not load place details. Please try again.");
+      } catch (error) {
+        handleAppError(
+          "load place details",
+          error,
+          ALERT_MESSAGES.loadPlaceDetailsFailed,
+        );
       }
     }
 
@@ -37,22 +47,20 @@ export default function PlaceDetails() {
   }, [placeId]);
 
   if (!fetchedPlace) {
-    return (
-      <View>
-        <Text>Loading place data...</Text>
-      </View>
-    );
+    return <LoadingOverlay message="Loading place data..." />;
   }
 
   return (
     <>
       <Stack.Screen options={{ title: fetchedPlace.title }} />
       <ScrollView>
-        <Image style={styles.image} source={{ uri: fetchedPlace?.imageUri }} />
+        <Image style={styles.image} source={{ uri: fetchedPlace.imageUri }} />
+
         <View style={styles.locationContainer}>
           <View style={styles.addressContainer}>
             <Text style={styles.address}>{fetchedPlace.address}</Text>
           </View>
+
           <OutlinedButton icon="map" onPress={showOnMapHandler}>
             View on Map
           </OutlinedButton>
@@ -68,13 +76,16 @@ const styles = StyleSheet.create({
     minHeight: 300,
     width: "100%",
   },
+
   locationContainer: {
     justifyContent: "center",
     alignItems: "center",
   },
+
   addressContainer: {
     padding: 20,
   },
+
   address: {
     color: Colors.primary500,
     textAlign: "center",
