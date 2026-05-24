@@ -1,23 +1,26 @@
 import { PermissionStatus } from "expo-modules-core";
-import { useEffect, useRef } from "react";
-import { AppState, AppStateStatus } from "react-native";
 
 import { ALERT_MESSAGES } from "@/constants/messages";
-import { showAlert, showSettingsAlert } from "@/util/alerts";
+import { logAppError, showAlert, showSettingsAlert } from "@/util/alerts";
 
 interface PermissionInfo {
   status: PermissionStatus;
   canAskAgain?: boolean;
+  granted?: boolean;
 }
 
-type RequestPermission = () => Promise<{ granted: boolean }>;
-type GetPermission = () => Promise<unknown>;
+type RequestPermission = () => Promise<{
+  granted: boolean;
+  canAskAgain?: boolean;
+}>;
+type GetPermission = () => Promise<PermissionInfo>;
 
 /**
  * Returns an async function that verifies a given permission,
  * requesting it if not yet determined and showing an alert if denied.
+ * After the first system prompt denial, it returns silently.
  * When permanently denied (canAskAgain === false), offers a shortcut to system settings.
- * Refreshes permission status automatically when the app returns to the foreground.
+ * Refreshes permission status on demand before each verification.
  */
 export function usePermission(
   permissionInformation: PermissionInfo | null,
@@ -25,45 +28,41 @@ export function usePermission(
   getPermission: GetPermission,
   deniedMessage: string,
 ): () => Promise<boolean> {
-  const getPermissionRef = useRef(getPermission);
-  useEffect(() => {
-    getPermissionRef.current = getPermission;
-  }, [getPermission]);
-
-  const appState = useRef(AppState.currentState);
-  useEffect(() => {
-    const subscription = AppState.addEventListener(
-      "change",
-      (nextAppState: AppStateStatus) => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === "active"
-        ) {
-          void getPermissionRef.current();
-        }
-        appState.current = nextAppState;
-      },
-    );
-    return () => subscription.remove();
-  }, []);
   return async function verifyPermission(): Promise<boolean> {
+    let currentPermissionInformation = permissionInformation;
+
+    try {
+      currentPermissionInformation = await getPermission();
+    } catch (error) {
+      logAppError("refresh permission state", error);
+      showAlert(
+        ALERT_MESSAGES.unexpectedErrorTitle,
+        ALERT_MESSAGES.permissionRefreshFailedMessage,
+      );
+    }
+
+    if (currentPermissionInformation?.granted) {
+      return true;
+    }
+
     if (
-      !permissionInformation ||
-      permissionInformation.status === PermissionStatus.UNDETERMINED
+      !currentPermissionInformation ||
+      currentPermissionInformation.status === PermissionStatus.UNDETERMINED
     ) {
       const permissionResponse = await requestPermission();
       return permissionResponse.granted;
     }
 
-    if (permissionInformation.status === PermissionStatus.DENIED) {
-      if (permissionInformation.canAskAgain === false) {
-        showSettingsAlert(
-          ALERT_MESSAGES.insufficientPermissionsTitle,
-          deniedMessage + ALERT_MESSAGES.permissionsDeniedPermanently,
-        );
-      } else {
-        showAlert(ALERT_MESSAGES.insufficientPermissionsTitle, deniedMessage);
-      }
+    if (currentPermissionInformation.status === PermissionStatus.DENIED) {
+      const settingsMessage =
+        currentPermissionInformation.canAskAgain === false
+          ? deniedMessage + ALERT_MESSAGES.permissionsDeniedPermanently
+          : deniedMessage;
+
+      showSettingsAlert(
+        ALERT_MESSAGES.insufficientPermissionsTitle,
+        settingsMessage,
+      );
       return false;
     }
 

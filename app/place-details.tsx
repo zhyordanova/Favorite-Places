@@ -7,7 +7,7 @@ import OutlinedButton from "@/components/ui/OutlinedButton";
 import { Colors } from "@/constants/colors";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { Place } from "@/models/place";
-import { showErrorAlert } from "@/util/alerts";
+import { handleAppError } from "@/util/alerts";
 import { fetchPlaceDetails } from "@/util/database";
 
 export default function PlaceDetails() {
@@ -34,8 +34,12 @@ export default function PlaceDetails() {
       try {
         const place = await fetchPlaceDetails(placeId);
         setFetchedPlace(place);
-      } catch {
-        showErrorAlert(ALERT_MESSAGES.loadPlaceDetailsFailed);
+      } catch (error) {
+        handleAppError(
+          "load place details",
+          error,
+          ALERT_MESSAGES.loadPlaceDetailsFailed,
+        );
       }
     }
 

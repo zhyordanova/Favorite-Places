@@ -18,7 +18,7 @@ import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
 import { usePickedLocation } from "@/store/picked-location-context";
 import { Location } from "@/types";
-import { showAlert } from "@/util/alerts";
+import { logAppError, showAlert } from "@/util/alerts";
 import { getAddress, getMapPreview } from "@/util/location";
 
 interface LocationPickerProps {
@@ -135,7 +135,8 @@ export default function LocationPicker({
         location = await LocationModule.getCurrentPositionAsync({
           accuracy: LocationModule.Accuracy.High,
         });
-      } catch {
+      } catch (error) {
+        logAppError("get current location", error);
         stopFetchingWithAlert(
           ALERT_MESSAGES.locationUnavailableTitle,
           ALERT_MESSAGES.locationUnavailableMessage,
@@ -162,7 +163,8 @@ export default function LocationPicker({
 
       onPickLocation({ ...currentLocation, address });
       setIsFetchingLocation(false);
-    } catch {
+    } catch (error) {
+      logAppError("fetch user location flow", error);
       stopFetchingWithAlert(
         ALERT_MESSAGES.unexpectedErrorTitle,
         ALERT_MESSAGES.unexpectedErrorMessage,

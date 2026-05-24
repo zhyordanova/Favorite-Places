@@ -1,8 +1,8 @@
-# Favourite Places Expo
+# Favorite Places Expo
 
 ## 🎯 Project Overview
 
-**Favourite Places** is a React Native mobile app that lets you save your favorite locations with photos, addresses, and GPS coordinates. Pick places on a map, capture photos with your camera, and build your personal location library with an intuitive offline-first database.
+**Favorite Places** is a React Native mobile app that lets you save your favorite locations with photos, addresses, and GPS coordinates. Pick places on a map, capture photos with your camera, and build your personal location library with an intuitive offline-first database.
 
 The app demonstrates production-quality React Native architecture with TypeScript, SQLite, custom map markers, and seamless cross-platform support (iOS, Android, Web).
 
@@ -73,7 +73,7 @@ The app demonstrates production-quality React Native architecture with TypeScrip
 ## 📂 Project Structure
 
 ```
-favourite-places/
+favorite-places/
 ├── app/                          # Screens (Expo Router)
 │   ├── _layout.tsx              # Root layout, DB init, providers
 │   ├── index.tsx                # Home (places list)
@@ -143,7 +143,7 @@ iOS Simulator or Android Emulator (or physical device)
 ```bash
 # Clone and install
 git clone <repo-url>
-cd FavouritePlaces
+cd FavoritePlaces
 npm install
 
 # Set up environment

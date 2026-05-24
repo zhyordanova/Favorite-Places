@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "FavouritePlaces",
-    "slug": "FavouritePlaces",
+    "name": "FavoritePlaces",
+    "slug": "favorite-places",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "favouriteplaces",
+    "scheme": "favorite-places",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -64,8 +64,8 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "The app needs access to your photos to save pictures of your favourite places.",
-          "savePhotosPermission": "The app needs access to save photos of your favourite places.",
+          "photosPermission": "The app needs access to your photos to save pictures of your favorite places.",
+          "savePhotosPermission": "The app needs access to save photos of your favorite places.",
           "isAccessMediaLocationEnabled": false
         }
       ]
