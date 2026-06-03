@@ -195,6 +195,8 @@ The app requests these native permissions:
 
 All permissions are requested with clear explanations and are optional (app works without them).
 
+> **Expo Go limitation:** On Android, saving captured images to the system album via `expo-media-library` is limited in Expo Go. Use a development build (`npm run android` / `npm run ios`) to test full save-to-album behavior.
+
 ---
 
 ## 🎓 Challenges & Lessons Learned
