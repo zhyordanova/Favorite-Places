@@ -4,7 +4,7 @@
 
 **Favorite Places** is a React Native mobile app that lets you save your favorite locations with photos, addresses, and GPS coordinates. Pick places on a map, capture photos with your camera, and build your personal location library with an intuitive offline-first database.
 
-The app demonstrates production-quality React Native architecture with TypeScript, SQLite, custom map markers, and seamless cross-platform support (iOS, Android, Web).
+The app demonstrates well-structured React Native architecture with TypeScript, SQLite, custom map markers, and seamless cross-platform support (iOS, Android, Web).
 
 ---
 
@@ -17,6 +17,38 @@ The app demonstrates production-quality React Native architecture with TypeScrip
 - 🎯 **Custom Markers** — Your place photos appear as styled pins on the map
 - ⚡ **Smooth UX** — Optimized map loading with no visual flash on Android/iOS
 - 📱 **Cross-Platform** — Native support for iOS, Android, and Web
+
+---
+
+## 🎬 Demo
+
+### App Walkthrough (GIF)
+
+Short demo recordings of the app running on both platforms.
+
+#### iOS
+![iOS Demo](./assets/readme/demo-ios.gif)
+
+#### Android
+![Android Demo](./assets/readme/demo-android.gif)
+
+### Screenshots
+
+| Home | Add Place |
+| ---- | --------- |
+| ![Home Empty](assets/screenshots/01-home-empty.png) | ![Add Place Form](assets/screenshots/02-add-place-form.png) |
+
+| Camera or Gallery | Location Picked |
+| ----------------- | --------------- |
+| ![Camera or Gallery](assets/screenshots/03-camera-or-gallery.png) | ![Location Picked](assets/screenshots/04-location-picked.png) |
+
+| Updated Places List | Place Details |
+| ------------------- | ------------- |
+| ![Updated Places List](assets/screenshots/05-updated-places-list.png) | ![Place Details](assets/screenshots/06-place-details.png) |
+
+| Map Custom Marker | Map Fallback Marker |
+| ----------------- | ------------------- |
+| ![Map Custom Marker](assets/screenshots/07-map-custom-marker.png) | ![Map Fallback Marker](assets/screenshots/08-map-fallback-marker.png) |
 
 ---
 
@@ -52,7 +84,7 @@ The app demonstrates production-quality React Native architecture with TypeScrip
 - FlatList optimization for lists
 - Platform-specific code (web vs. native)
 - Permission requests with clear UX
-- Loading states and error boundaries
+- Loading states and graceful error handling
 
 ### ✅ Database Design
 
@@ -65,7 +97,7 @@ The app demonstrates production-quality React Native architecture with TypeScrip
 
 - Positioned custom markers off-screen to prevent render flash
 - Memoized Context value to avoid unnecessary re-renders
-- SQLite B-tree indexing for fast lookups
+- Efficient SQLite queries and ordering for fast lookups
 - Vector icons instead of bundled images
 
 ---
@@ -176,12 +208,24 @@ npm run reset-project   # Clear data and rebuild
 Create a `.env` file in the project root:
 
 ```env
-MAPBOX_ACCESS_TOKEN=your_mapbox_access_token_here
+EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_access_token_here
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_android_google_maps_api_key_here
+# Optional: if omitted, iOS falls back to EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS=your_ios_google_maps_api_key_here
 ```
 
 An `.env.example` file is included in the repository as a template.
 
 Get your token from [Mapbox](https://mapbox.com).
+
+For interactive maps on Android/iOS (`react-native-maps`), create a Google Maps API key and enable the required SDKs in Google Cloud.
+After updating `.env`, rebuild the native app:
+
+```bash
+npm run android
+# or
+npm run ios
+```
 
 ---
 
@@ -270,7 +314,7 @@ This project is a great portfolio piece for demonstrating:
 
 ## 👤 Author
 
-Created as a practical portfolio project demonstrating production-grade React Native architecture and best practices.
+Created as a practical portfolio project demonstrating production-ready React Native patterns and best practices.
 
 For questions or feature ideas, feel free to open an issue or reach out.
 

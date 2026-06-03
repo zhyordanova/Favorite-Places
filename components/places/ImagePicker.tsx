@@ -55,14 +55,6 @@ export default function ImagePicker({
     getLibraryPermission,
   ] = useMediaLibraryPermissions();
 
-  const [
-    albumPermissionInformation,
-    requestAlbumPermission,
-    getAlbumPermission,
-  ] = MediaLibrary.usePermissions({
-    granularPermissions: ["photo", "video"],
-  });
-
   const verifyCameraPermission = usePermission(
     cameraPermissionInformation,
     requestCameraPermission,
@@ -75,13 +67,6 @@ export default function ImagePicker({
     requestLibraryPermission,
     getLibraryPermission,
     "You need to grant media library permissions to use this app.",
-  );
-
-  const verifyAlbumPermission = usePermission(
-    albumPermissionInformation,
-    requestAlbumPermission,
-    getAlbumPermission,
-    "You need to grant media library permissions to save images to album.",
   );
 
   async function processImageResult(
@@ -106,14 +91,17 @@ export default function ImagePicker({
       return;
     }
 
-    const hasPermission = await verifyAlbumPermission();
-
-    if (!hasPermission) {
-      console.warn("[AppWarning] Album save permission denied by user.");
-      return;
-    }
-
     try {
+      const permission = await MediaLibrary.requestPermissionsAsync(false, [
+        "photo",
+        "video",
+      ]);
+
+      if (!permission.granted) {
+        console.warn("[AppWarning] Album save permission denied by user.");
+        return;
+      }
+
       const asset = await MediaLibrary.createAssetAsync(uri);
       const album = await MediaLibrary.getAlbumAsync("FavouritePlaces");
       if (album) {
