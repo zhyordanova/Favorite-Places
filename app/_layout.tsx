@@ -7,8 +7,8 @@ import { StyleSheet, Text, View } from "react-native";
 import IconButton from "@/components/ui/IconButton";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { Colors } from "@/constants/colors";
-import { ALERT_MESSAGES } from "@/constants/messages";
 import { PickedLocationProvider } from "@/store/picked-location-context";
+import { logAppError } from "@/util/alerts";
 import { init } from "@/util/database";
 
 void SplashScreen.preventAutoHideAsync();
@@ -32,7 +32,7 @@ export default function RootLayout() {
         setDbInitialized(true);
       })
       .catch((error: unknown) => {
-        console.error(ALERT_MESSAGES.dbInitFailed, error);
+        logAppError("initialize database", error);
         setDbError(true);
       })
       .finally(() => {
