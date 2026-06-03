@@ -27,27 +27,29 @@ The app demonstrates well-structured React Native architecture with TypeScript, 
 Short demo recordings of the app running on both platforms.
 
 #### iOS
+
 ![iOS Demo](./assets/readme/demo-ios.gif)
 
 #### Android
+
 ![Android Demo](./assets/readme/demo-android.gif)
 
 ### Screenshots
 
-| Home | Add Place |
-| ---- | --------- |
+| Home                                                | Add Place                                                   |
+| --------------------------------------------------- | ----------------------------------------------------------- |
 | ![Home Empty](assets/screenshots/01-home-empty.png) | ![Add Place Form](assets/screenshots/02-add-place-form.png) |
 
-| Camera or Gallery | Location Picked |
-| ----------------- | --------------- |
+| Camera or Gallery                                                 | Location Picked                                               |
+| ----------------------------------------------------------------- | ------------------------------------------------------------- |
 | ![Camera or Gallery](assets/screenshots/03-camera-or-gallery.png) | ![Location Picked](assets/screenshots/04-location-picked.png) |
 
-| Updated Places List | Place Details |
-| ------------------- | ------------- |
+| Updated Places List                                                   | Place Details                                             |
+| --------------------------------------------------------------------- | --------------------------------------------------------- |
 | ![Updated Places List](assets/screenshots/05-updated-places-list.png) | ![Place Details](assets/screenshots/06-place-details.png) |
 
-| Map Custom Marker | Map Fallback Marker |
-| ----------------- | ------------------- |
+| Map Custom Marker                                                 | Map Fallback Marker                                                   |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------- |
 | ![Map Custom Marker](assets/screenshots/07-map-custom-marker.png) | ![Map Fallback Marker](assets/screenshots/08-map-fallback-marker.png) |
 
 ---
