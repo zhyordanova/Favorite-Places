@@ -1,3 +1,4 @@
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import {
   launchCameraAsync,
   launchImageLibraryAsync,
@@ -12,7 +13,7 @@ import { PICKER_OPTIONS } from "@/constants/imagePicker";
 import { ALERT_MESSAGES } from "@/constants/messages";
 import { sharedStyles } from "@/constants/sharedStyles";
 import { usePermission } from "@/hooks/usePermission";
-import { handleAppError, logAppError, showErrorAlert } from "@/util/alerts";
+import { handleAppError, showErrorAlert } from "@/util/alerts";
 
 interface ImagePickerProps {
   onTakeImage: (uri: string) => void;
@@ -26,20 +27,41 @@ function isCameraUnavailableError(error: unknown): boolean {
   );
 }
 
+function isMediaLibraryPermissionError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /(missing media_library permissions|requested the audio permission|androidmanifest|requestpermissionsasync has been rejected)/i.test(
+      error.message,
+    )
+  );
+}
+
 export default function ImagePicker({
   onTakeImage,
   selectedImage,
 }: ImagePickerProps) {
+  const isExpoGo =
+    Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
   const [
     cameraPermissionInformation,
     requestCameraPermission,
     getCameraPermission,
   ] = useCameraPermissions();
+
   const [
     libraryPermissionInformation,
     requestLibraryPermission,
     getLibraryPermission,
   ] = useMediaLibraryPermissions();
+
+  const [
+    albumPermissionInformation,
+    requestAlbumPermission,
+    getAlbumPermission,
+  ] = MediaLibrary.usePermissions({
+    granularPermissions: ["photo", "video"],
+  });
 
   const verifyCameraPermission = usePermission(
     cameraPermissionInformation,
@@ -53,6 +75,13 @@ export default function ImagePicker({
     requestLibraryPermission,
     getLibraryPermission,
     "You need to grant media library permissions to use this app.",
+  );
+
+  const verifyAlbumPermission = usePermission(
+    albumPermissionInformation,
+    requestAlbumPermission,
+    getAlbumPermission,
+    "You need to grant media library permissions to save images to album.",
   );
 
   async function processImageResult(
@@ -70,9 +99,17 @@ export default function ImagePicker({
   }
 
   async function saveToAlbum(uri: string): Promise<void> {
-    const hasPermission = await verifyLibraryPermission();
+    if (isExpoGo) {
+      console.warn(
+        "[AppWarning] Skipping album save in Expo Go. Use a development build to test media-library save functionality.",
+      );
+      return;
+    }
+
+    const hasPermission = await verifyAlbumPermission();
 
     if (!hasPermission) {
+      console.warn("[AppWarning] Album save permission denied by user.");
       return;
     }
 
@@ -85,8 +122,15 @@ export default function ImagePicker({
         await MediaLibrary.createAlbumAsync("FavouritePlaces", asset, false);
       }
     } catch (error) {
-      logAppError("save image to album", error);
-      // Saving to album can be unsupported in some environments.
+      if (isMediaLibraryPermissionError(error)) {
+        console.warn(
+          "[AppWarning] Could not save image to album due to media permission/configuration.",
+          error,
+        );
+        return;
+      }
+
+      console.warn("[AppWarning] Could not save image to album.", error);
     }
   }
 
