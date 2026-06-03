@@ -28,11 +28,11 @@ Short demo recordings of the app running on both platforms.
 
 #### iOS
 
-![iOS Demo](./assets/readme/demo-ios.gif)
+![iOS Demo](./assets/demo-ios.gif)
 
 #### Android
 
-![Android Demo](./assets/readme/demo-android.gif)
+![Android Demo](./assets/demo-android.gif)
 
 ### Screenshots
 
