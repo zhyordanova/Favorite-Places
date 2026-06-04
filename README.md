@@ -28,11 +28,11 @@ Short demo recordings of the app running on both platforms.
 
 #### iOS
 
-![iOS Demo](./assets/screenshots/demo-ios.gif)
+<img src="./assets/screenshots/demo-ios.gif" alt="iOS Demo" width="320" />
 
 #### Android
 
-![Android Demo](./assets/screenshots/demo-android.gif)
+<img src="./assets/screenshots/demo-android.gif" alt="Android Demo" width="320" />
 
 ### Screenshots
 
@@ -40,9 +40,9 @@ Short demo recordings of the app running on both platforms.
 | --------------------------------------------------- | ----------------------------------------------------------- |
 | ![Home Empty](assets/screenshots/01-home-empty.png) | ![Add Place Form](assets/screenshots/02-add-place-form.png) |
 
-| Camera or Gallery                                                 | Location Picked                                               |
-| ----------------------------------------------------------------- | ------------------------------------------------------------- |
-| ![Camera or Gallery](assets/screenshots/03-camera-or-gallery.png) | ![Location Picked](assets/screenshots/04-location-picked.png) |
+| Camera or Gallery                                                 | Location Picked                                                              |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| ![Camera or Gallery](assets/screenshots/03-camera-or-gallery.png) | ![Locate User or Location Picked](assets/screenshots/04-location-picked.png) |
 
 | Updated Places List                                                   | Place Details                                             |
 | --------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -211,23 +211,11 @@ Create a `.env` file in the project root:
 
 ```env
 EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_access_token_here
-EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_android_google_maps_api_key_here
-# Optional: if omitted, iOS falls back to EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
-EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS=your_ios_google_maps_api_key_here
 ```
 
 An `.env.example` file is included in the repository as a template.
 
 Get your token from [Mapbox](https://mapbox.com).
-
-For interactive maps on Android/iOS (`react-native-maps`), create a Google Maps API key and enable the required SDKs in Google Cloud.
-After updating `.env`, rebuild the native app:
-
-```bash
-npm run android
-# or
-npm run ios
-```
 
 ---
 
@@ -316,9 +304,9 @@ This project is a great portfolio piece for demonstrating:
 
 ## 👤 Author
 
-Created as a practical portfolio project demonstrating production-ready React Native patterns and best practices.
+Created as a practical portfolio project showcasing clean React Native architecture, mobile UX considerations, and real-world app development patterns.
 
-For questions or feature ideas, feel free to open an issue or reach out.
+For questions, feedback, or feature ideas, feel free to open an issue or reach out.
 
 ---
 
